@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using salesCVM.Models;
 using salesCVM.Token;
 
@@ -15,6 +16,7 @@ namespace salesCVM.Controllers
     {
         [HttpPost]
         [Route("authenticate")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
         public IHttpActionResult Authenticate(UserLogin usuario)
         {
             if (usuario == null) 
