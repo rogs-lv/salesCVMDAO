@@ -7,6 +7,8 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using salesCVM.Models;
 using salesCVM.Token;
+using salesCVM.Models;
+using salesCVM.DAO.DAO;
 
 namespace salesCVM.Controllers
 {
@@ -14,6 +16,10 @@ namespace salesCVM.Controllers
     [RoutePrefix("salesCMV/Acceso")]
     public class AccesoController : ApiController
     {
+        LoginDAO dao;
+        public AccesoController() {
+            dao = new LoginDAO();
+        }
         [HttpPost]
         [Route("authenticate")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
@@ -22,17 +28,19 @@ namespace salesCVM.Controllers
             if (usuario == null) 
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
 
-            //execute query to DB
-            bool isCredentialValid = (usuario.Password == "12345" && usuario.IdUser == "asdf");
-
-            //Si el query confirm exist user
-            if (isCredentialValid)
+            User userData = new User();
+            if (dao.Login(usuario, ref userData))
             {
-                User user = new User(usuario.IdUser, usuario.Password);
-                string token = TokenGenerator.GenerateTokenJwt(user);
-                return Ok(token);
+                if (userData != null)
+                {
+                    string toke = TokenGenerator.GenerateTokenJwt(userData);
+                    userData.Token = toke;
+                    return Ok(userData);
+                }
+                else
+                    return Content(HttpStatusCode.NotFound, "El usuario o contraseña no son validos");
             }
-            else 
+            else
                 return Unauthorized();
         }
     }

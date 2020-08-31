@@ -234,6 +234,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\salesCVM.DAO\salesCVM.DAO.csproj">
+      <Project>{2dafbc09-60be-47da-a1b8-3316a5a1c1d6}</Project>
+      <Name>salesCVM.DAO</Name>
+    </ProjectReference>
     <ProjectReference Include="..\salesCVM.Models\salesCVM.Models.csproj">
       <Project>{ce169467-e921-49f0-a480-6e7f12d7501a}</Project>
       <Name>salesCVM.Models</Name>

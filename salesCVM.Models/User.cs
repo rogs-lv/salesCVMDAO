@@ -8,20 +8,16 @@ namespace salesCVM.Models
 {
     public class User
     {
-        public string IdUser { get; set; }
-        public string NameUser { get; set; }
-        public string IdUserSap { get; set; }
-        public string Password { get; set; }
-        public Rol Role { get; set; }
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string U_CardCode { get; set; }
+        public string U_CardName { get; set; }
+        public string U_SlpCode { get; set; }
+        public string U_SlpName { get; set; }
+        public char U_CambioPrecio { get; set; }
+        public decimal U_PrcntjDescMax { get; set; }
+        //public Rol Role { get; set; }
         public string Token { get; set; }
-        public User(string _idUser, string _password) {
-            this.IdUser = _idUser;
-            this.Password = _password;
-            this.NameUser = "";
-            this.IdUserSap = "";
-            this.Role = new Rol() { IdRol = 1, NameRol = "Role 1" };
-            this.Token = "";
-        }
     }
 
     public class UserLogin {
