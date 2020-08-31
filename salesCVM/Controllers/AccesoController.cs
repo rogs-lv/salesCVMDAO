@@ -7,7 +7,6 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using salesCVM.Models;
 using salesCVM.Token;
-using salesCVM.Models;
 using salesCVM.DAO.DAO;
 
 namespace salesCVM.Controllers
