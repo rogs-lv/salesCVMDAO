@@ -15,7 +15,7 @@ namespace salesCVM.DAO.Implements
     {
         Log lg;
         public SQLServerAdapter() {
-            lg = new Log();
+            lg = Log.getIntance();
         }
         public IDbConnection GetConnection() {
             try

@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using salesCVM.DAO.DAO;
 using salesCVM.Models;
 using salesCVM.Token;
-using salesCVM.DAO.DAO;
 
 namespace salesCVM.Controllers
 {
@@ -16,8 +15,10 @@ namespace salesCVM.Controllers
     public class AccesoController : ApiController
     {
         LoginDAO dao;
+        SAPConnectDAO sapDao;
         public AccesoController() {
             dao = new LoginDAO();
+            sapDao = new SAPConnectDAO();
         }
         [HttpPost]
         [Route("authenticate")]
@@ -41,6 +42,18 @@ namespace salesCVM.Controllers
             }
             else
                 return Unauthorized();
+        }
+
+        [HttpGet]
+        [Route("ping")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public IHttpActionResult Ping() {
+            string msjSap = string.Empty;
+            bool statusPing = sapDao.PingConexionSAP(msjSap);
+            if (statusPing && msjSap.Length == 0)
+                return Ok("Conexión a SAP exitosa");
+            else
+                return Content(HttpStatusCode.ServiceUnavailable, msjSap);
         }
     }
 }

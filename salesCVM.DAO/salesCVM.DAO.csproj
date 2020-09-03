@@ -200,7 +200,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAO\ConfiguracionDAO.cs" />
     <Compile Include="DAO\LoginDAO.cs" />
+    <Compile Include="DAO\SAPConnectDAO.cs" />
     <Compile Include="DBFactory.cs" />
     <Compile Include="IDBAdapter.cs" />
     <Compile Include="Implements\HanaAdapter.cs" />
@@ -217,6 +219,10 @@
     <ProjectReference Include="..\salesCVM.Models\salesCVM.Models.csproj">
       <Project>{ce169467-e921-49f0-a480-6e7f12d7501a}</Project>
       <Name>salesCVM.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\salesCVM.SAP\salesCVM.SAP.csproj">
+      <Project>{dd6bae54-0ae6-46bf-82cd-531396fed9c1}</Project>
+      <Name>salesCVM.SAP</Name>
     </ProjectReference>
     <ProjectReference Include="..\salesCVM.Utilities\salesCVM.Utilities.csproj">
       <Project>{84433bdf-9ae6-41d1-bc8a-cff69cf14322}</Project>

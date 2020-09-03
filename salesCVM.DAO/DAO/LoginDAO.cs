@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
 using Dapper;
 using salesCVM.Utilities;
 using salesCVM.Models;
-using System.Data;
 
 namespace salesCVM.DAO.DAO
 { 
@@ -17,7 +14,7 @@ namespace salesCVM.DAO.DAO
 
         public LoginDAO() {
             dBAdapter = DBFactory.GetDefaultAdapter();
-            lg = new Log();
+            lg = Log.getIntance();
         }
 
         public bool Login(UserLogin userLogin, ref User userData) {
@@ -29,7 +26,7 @@ namespace salesCVM.DAO.DAO
                     throw new Exception("Connection not available or closed");
                 }
 
-                userData = connection.Query<User>($"{spLogin} '{userLogin.IdUser}','{userLogin.Password}'", commandType: CommandType.StoredProcedure).FirstOrDefault();
+                userData = connection.Query<User>($"{spLogin} '{userLogin.IdUser}','{userLogin.Password}'").FirstOrDefault();
                 return true;
             }
             catch (Exception ex)

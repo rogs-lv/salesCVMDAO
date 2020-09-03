@@ -10,6 +10,25 @@ namespace salesCVM.Utilities
 {
     public class Log
     {
+        private static Log _intanceLog;
+        private Log() {
+        }
+        /// <summary>
+        /// Singleton
+        /// </summary>
+        /// <returns></returns>
+        public static Log getIntance() {
+            if (_intanceLog == null)
+                CreateInstance();
+            return _intanceLog;
+        }
+
+        private static void CreateInstance() {
+            if (_intanceLog == null)
+                _intanceLog = new Log();
+        }
+
+        #region Metodos
         public void Registrar(Exception ex, string nameSpace)
         {
             StreamWriter Wr = null;
@@ -45,5 +64,6 @@ namespace salesCVM.Utilities
                 }
             }
         }
+        #endregion
     }
 }

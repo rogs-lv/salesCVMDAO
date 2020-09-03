@@ -12,10 +12,11 @@ namespace salesCVM.Models
         /// <summary>
         /// Tipo de comando a ejecutar para la BD
         /// </summary>
-        string command;
+        string command = string.Empty;
         public StoreProcedure() {
             command = ConfigurationManager.AppSettings["cmd"];
         }
+
         #region Login
         /// <summary>
         /// Comando para ejecutar procedimiento de login
@@ -23,6 +24,28 @@ namespace salesCVM.Models
         public string spLogin {
             get {
                 return $"{command} \"IDS_Login\" ";
+            }
+        }
+        #endregion
+
+        #region Configuracion
+        public string spConfiguracion { 
+            get {
+                return $"{command} \"IDS_Configuracion\" ";
+            } 
+        }
+
+        public string spGuardarConnexion {
+            get {
+                return $"{command} \"IDS_GuardarConexion\" ";
+            }
+        }
+        #endregion
+
+        #region SAP
+        public string spDatosConexion {
+            get {
+                return $"{command} \"IDS_ConexionSAP\"";
             }
         }
         #endregion

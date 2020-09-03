@@ -24,4 +24,5 @@ namespace salesCVM.Models
         public string IdUser { get; set; }
         public string Password { get; set; }
     }
+
 }
