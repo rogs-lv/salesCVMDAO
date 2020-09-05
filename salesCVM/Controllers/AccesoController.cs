@@ -20,6 +20,7 @@ namespace salesCVM.Controllers
             dao = new LoginDAO();
             sapDao = new SAPConnectDAO();
         }
+        
         [HttpPost]
         [Route("authenticate")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
@@ -41,7 +42,7 @@ namespace salesCVM.Controllers
                     return Content(HttpStatusCode.NotFound, "El usuario o contraseña no son validos");
             }
             else
-                return Unauthorized();
+                return Content(HttpStatusCode.InternalServerError, "Error en durante el proceso");
         }
 
         [HttpGet]

@@ -211,7 +211,9 @@
     <Compile Include="Util\PropertiesUtil.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="DBFactory.properties" />
+    <None Include="DBFactory.properties">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

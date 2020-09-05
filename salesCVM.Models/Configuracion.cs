@@ -14,6 +14,9 @@ namespace salesCVM.Models
             public char U_SN { get; set; }
             public char U_Remision { get; set; }
             public char U_CRM { get; set; }
+            public char U_Reporte { get; set; }
+            public char U_Dashboard { get; set; }
+            public char U_Articulos { get; set; }
         }
 
         public class Adicional
