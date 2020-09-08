@@ -202,6 +202,7 @@
   <ItemGroup>
     <Compile Include="DAO\ConfiguracionDAO.cs" />
     <Compile Include="DAO\LoginDAO.cs" />
+    <Compile Include="DAO\MarketingDAO.cs" />
     <Compile Include="DAO\SAPConnectDAO.cs" />
     <Compile Include="DBFactory.cs" />
     <Compile Include="IDBAdapter.cs" />

@@ -49,5 +49,13 @@ namespace salesCVM.Models
             }
         }
         #endregion
+
+        #region Marketing
+        public string SpDocument {
+            get {
+                return $"{command} \"IDS_GetDocument\" ";
+            }
+        }
+        #endregion
     }
 }
