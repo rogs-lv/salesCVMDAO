@@ -57,5 +57,15 @@ namespace salesCVM.Models
             }
         }
         #endregion
+
+        #region Datos Maestros
+        public string SpDatosMaestros
+        {
+            get
+            {
+                return $"{command} \"IDS_GetDatosMaestros\" ";
+            }
+        }
+        #endregion
     }
 }
