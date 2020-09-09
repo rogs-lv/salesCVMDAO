@@ -42,8 +42,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interface\ISAPConnect.cs" />
+    <Compile Include="Interface\ISAPMarketing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SAPConnect.cs" />
+    <Compile Include="SAPMarketing.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\salesCVM.Models\salesCVM.Models.csproj">
+      <Project>{ce169467-e921-49f0-a480-6e7f12d7501a}</Project>
+      <Name>salesCVM.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\salesCVM.Utilities\salesCVM.Utilities.csproj">
+      <Project>{84433bdf-9ae6-41d1-bc8a-cff69cf14322}</Project>
+      <Name>salesCVM.Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="SAPbobsCOM">
@@ -55,16 +67,6 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\salesCVM.Models\salesCVM.Models.csproj">
-      <Project>{ce169467-e921-49f0-a480-6e7f12d7501a}</Project>
-      <Name>salesCVM.Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\salesCVM.Utilities\salesCVM.Utilities.csproj">
-      <Project>{84433bdf-9ae6-41d1-bc8a-cff69cf14322}</Project>
-      <Name>salesCVM.Utilities</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

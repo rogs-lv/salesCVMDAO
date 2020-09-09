@@ -13,7 +13,7 @@ namespace salesCVM.SAP
 {
     public class SAPConnect : ISAPConnect
     {
-        protected Company oCompany;
+        private Company oCompany;
         Log lg;
         public SAPConnect() {
             oCompany    = new Company();
@@ -23,16 +23,16 @@ namespace salesCVM.SAP
         public bool Conectar(ref string msjCompany, Models.SAP sbo) {
             try
             {
-                oCompany.Server = sbo.Server;
-                oCompany.DbServerType = ServerType(sbo.DbServerType);
-                oCompany.SLDServer = sbo.SLDServer;
-                oCompany.CompanyDB = sbo.CompanyDB;
-                oCompany.UserName = sbo.UserName;//"manager";
-                oCompany.Password = sbo.Password;//"1234";
-                oCompany.DbUserName = sbo.DbUserName;// "sa";
-                oCompany.DbPassword = sbo.DbPassword;//"orosas$$";
-                oCompany.language = Lenguage(sbo.language);
-                oCompany.UseTrusted = false;
+                oCompany.Server         = sbo.Server;
+                oCompany.DbServerType   = ServerType(sbo.DbServerType);
+                oCompany.LicenseServer  = sbo.SLDServer;
+                oCompany.CompanyDB      = sbo.CompanyDB;
+                oCompany.UserName       = sbo.UserName;//"manager";
+                oCompany.Password       = sbo.Password;//"12345";
+                oCompany.DbUserName     = sbo.DbUserName;// "sa";
+                oCompany.DbPassword     = sbo.DbPassword;//"orosas$$";
+                oCompany.language       = Lenguage(sbo.language);
+                oCompany.UseTrusted     = false;
 
                 if (oCompany.Connect() != 0)
                 {
@@ -47,7 +47,9 @@ namespace salesCVM.SAP
                 return false;
             }
         }
-
+        public Company GetCompany() {
+            return oCompany;
+        }
         private BoDataServerTypes ServerType(string typeAppSetting) {
             switch (typeAppSetting)
             {

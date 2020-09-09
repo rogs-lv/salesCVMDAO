@@ -8,16 +8,23 @@ using System.Threading.Tasks;
 using Dapper;
 using salesCVM.Models;
 using salesCVM.Utilities;
+using salesCVM.DAO.Util;
+using salesCVM.SAP.Interface;
+using salesCVM.SAP;
 
 namespace salesCVM.DAO.DAO
 {
     public class MarketingDAO : StoreProcedure
     {
         private IDBAdapter dBAdapter;
+        private ISAPMarketing iSap;
+        private Encrypt encry;
         Log lg;
         public MarketingDAO() {
             lg = Log.getIntance();
             dBAdapter = DBFactory.GetDefaultAdapter();
+            encry = new Encrypt();
+            iSap = new SAPMarketing();
         }
         /// <summary>
         /// Save documents
@@ -26,7 +33,7 @@ namespace salesCVM.DAO.DAO
         /// <param name="document"></param>
         /// <param name="typeDocument"></param>
         /// <returns></returns>
-        public bool SaveDocument(ref string msjSQL, DocSAP document, int typeDocument) {
+        public bool SaveDocument(ref Mensajes msjSQL, DocSAP document, int typeDocument) {
             IDbConnection connection = dBAdapter.GetConnection();
             try
             {
@@ -63,10 +70,14 @@ namespace salesCVM.DAO.DAO
                         trans.Rollback();
                     
                     trans.Dispose();
+                    msjSQL.DocNum = DocEntry;
+                    msjSQL.DocEntry = DocEntry;
                     return true;
                 }
                 else {
-                    msjSQL = "El documento no se pudo guardar";
+                    msjSQL.Mensaje = "El documento no se pudo guardar";
+                    msjSQL.DocEntry = -1;
+                    msjSQL.DocNum = -1;
                     trans.Dispose();
                     return false;
                 }
@@ -74,7 +85,7 @@ namespace salesCVM.DAO.DAO
             catch (Exception ex)
             {
                 lg.Registrar(ex, this.GetType().FullName);
-                msjSQL = ex.Message;
+                msjSQL.Mensaje = ex.Message;
                 return false;
             }
             finally {
@@ -89,7 +100,7 @@ namespace salesCVM.DAO.DAO
         /// Update documents
         /// </summary>
         /// <returns></returns>
-        public bool UpdateDocument(ref string msjSQL, DocSAP document, int typeDocument) {
+        public bool UpdateDocument(ref Mensajes msjSQL, DocSAP document, int typeDocument) {
             return true;
         }
         /// <summary>
@@ -136,6 +147,36 @@ namespace salesCVM.DAO.DAO
                     connection.Close();
                     connection.Dispose();
                 }
+            }
+        }
+        /// <summary>
+        /// Create document Quotation and Order
+        /// </summary>
+        /// <param name="msjCreate"></param>
+        /// <param name="document"></param>
+        /// <param name="modelo"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public bool CreateDocumentSAP(ref Mensajes msjCreate, DocSAP document, int type) {
+            IDbConnection connection = dBAdapter.GetConnection();
+            try
+            {
+                if (connection.State == ConnectionState.Closed)
+                    throw new Exception("Connection not available or closed");
+
+                Models.DatosConexion datosSAP = connection.Query<Models.DatosConexion>($"{spDatosConexion}").FirstOrDefault();
+                Models.SAP modeloSap = encry.DescryConexionSAP(datosSAP.CadenaConexion);
+
+                if (iSap.CreateDocument(ref msjCreate, document, modeloSap, type))
+                    return true;
+                else 
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                msjCreate.Mensaje = ex.Message;
+                lg.Registrar(ex, this.GetType().FullName);
+                return false;
             }
         }
         /// <summary>

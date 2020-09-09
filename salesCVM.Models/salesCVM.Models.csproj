@@ -61,6 +61,7 @@
     <Compile Include="Configuracion.cs" />
     <Compile Include="Marketing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Response.cs" />
     <Compile Include="Rol.cs" />
     <Compile Include="SAP.cs" />
     <Compile Include="StoreProcedure.cs" />

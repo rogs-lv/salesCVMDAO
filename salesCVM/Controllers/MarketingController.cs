@@ -14,6 +14,7 @@ namespace salesCVM.Controllers
     public class MarketingController : ApiController
     {
         MarketingDAO MktDao;
+        
         public MarketingController() {
             MktDao = new MarketingDAO();
         }
@@ -28,18 +29,18 @@ namespace salesCVM.Controllers
             if (document.Detail.Count == 0)
                 return Content(HttpStatusCode.BadRequest, "El documento debe contener por lo menos un artículo");
 
-            string msj = string.Empty;
+            Mensajes msj = new Mensajes();
 
             switch (typeEvent)
             {
                 case 'I'://Insert
                     if (MktDao.SaveDocument(ref msj, document, typeDocument))
-                        return Content(HttpStatusCode.OK, "Borrador guardado correctamente");
+                        return Content(HttpStatusCode.OK, $"Borrador {msj.DocEntry} guardado correctamente");
                     else
                         return Content(HttpStatusCode.Conflict, msj);
                 case 'U'://Update
                     if (MktDao.UpdateDocument(ref msj, document, typeDocument))
-                        return Content(HttpStatusCode.OK, "Borrador actualizado");
+                        return Content(HttpStatusCode.OK, $"Borrador {msj.DocEntry} actualizado");
                     else
                         return Content(HttpStatusCode.Conflict, msj);
                 default:
@@ -50,9 +51,13 @@ namespace salesCVM.Controllers
         [HttpPost]
         [Route("CreateDocument")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public IHttpActionResult CreateDocument(DocSAP document)
+        public IHttpActionResult CreateDocument([FromBody]DocSAP document, int typeDocument)
         {
-            return null;
+            Mensajes response = new Mensajes();
+            if (MktDao.CreateDocumentSAP(ref response, document, typeDocument)) 
+                return Content(HttpStatusCode.OK, response);
+            else
+                return Content(HttpStatusCode.Conflict, response.Mensaje);
         }
 
         [HttpGet]

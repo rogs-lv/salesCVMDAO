@@ -50,7 +50,7 @@ namespace salesCVM.Controllers
         [EnableCors(origins: "*", headers: "*", methods: "*")]
         public IHttpActionResult Ping() {
             string msjSap = string.Empty;
-            bool statusPing = sapDao.PingConexionSAP(msjSap);
+            bool statusPing = sapDao.PingConexionSAP(ref msjSap);
             if (statusPing && msjSap.Length == 0)
                 return Ok("Conexión a SAP exitosa");
             else

@@ -209,6 +209,7 @@
     <Compile Include="Implements\HanaAdapter.cs" />
     <Compile Include="Implements\SQLServerAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\Encrypt.cs" />
     <Compile Include="Util\PropertiesUtil.cs" />
   </ItemGroup>
   <ItemGroup>
