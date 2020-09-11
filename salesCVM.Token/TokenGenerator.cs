@@ -25,7 +25,7 @@ namespace salesCVM.Token
             SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
             
             //create a claimsIdentity
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, user.Name), new Claim(ClaimTypes.NameIdentifier, user.Code), new Claim(ClaimTypes.PrimarySid, user.U_CardCode)});
+            ClaimsIdentity claimsIdentity = new ClaimsIdentity(new[] { new Claim("Code", user.Code), new Claim("Name", user.Name), new Claim("CardCode", user.U_CardCode), new Claim("CardName", user.U_CardName), new Claim("SlpCode", user.U_SlpCode), new Claim("SlpName", user.U_SlpName), new Claim("CambioPrecio", user.U_CambioPrecio.ToString()), new Claim("PDescuento", user.U_PrcntjDescMax.ToString()), new Claim("TaxCode", user.TaxCode), new Claim("ListNum", user.ListNum.ToString()), new Claim("WhsCode", user.WhsCode)});
 
             //create token to the user
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();

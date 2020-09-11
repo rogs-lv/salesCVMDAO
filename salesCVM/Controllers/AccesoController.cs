@@ -34,9 +34,8 @@ namespace salesCVM.Controllers
             {
                 if (userData != null)
                 {
-                    string toke = TokenGenerator.GenerateTokenJwt(userData);
-                    userData.Token = toke;
-                    return Ok(userData);
+                    string token = TokenGenerator.GenerateTokenJwt(userData);
+                    return Ok(new { Token = token});
                 }
                 else
                     return Content(HttpStatusCode.NotFound, "El usuario o contraseña no son validos");
