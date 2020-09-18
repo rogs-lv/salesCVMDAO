@@ -16,7 +16,7 @@ namespace salesCVM.SAP
             lg = Log.getIntance();
         }
 
-        public bool CreateDocument(ref Mensajes msjCreate, DocSAP document, Models.SAP modelo, int type) {
+        public bool CreateDocument(ref Mensajes msjCreate, DocSAP document, Models.SAP modelo, int type, string Usuario) {
             string msj = string.Empty;
             Company _oCompany = null;
             try
@@ -31,22 +31,29 @@ namespace salesCVM.SAP
                         oDoc = (Documents)_oCompany.GetBusinessObject(BoObjectTypes.oOrders);
 
                     oDoc.CardCode       = document.Header.CardCode;
-                    oDoc.DocDate        = document.Header.DocDate;
+                    oDoc.DocDate        = DateTime.Now;
+                    oDoc.TaxDate        = DateTime.Now;
                     if (type == 17)
                         oDoc.DocDueDate = document.Header.DocDate;
-                    oDoc.Reference1     = document.Header.Reference;
+                    oDoc.NumAtCard      = document.Header.Reference;
                     oDoc.Comments       = document.Header.Comments;
+                    oDoc.DocCurrency    = document.Detail[0].Currency;
 
-                    AddUserFieldHeader(oDoc);
+                    AddUserFieldHeader(oDoc, Usuario);
 
                     for (int q = 0; q < document.Detail.Count; q++)
                     {
                         oDoc.Lines.ItemCode         = document.Detail[q].ItemCode;
                         oDoc.Lines.Quantity         = document.Detail[q].Quantity;
-                        oDoc.Lines.UnitPrice        = (double)document.Detail[q].UnitePrice;
+                        oDoc.Lines.UnitPrice        = (double)document.Detail[q].Price;
                         oDoc.Lines.DiscountPercent  = document.Detail[q].Discount;
                         oDoc.Lines.TaxCode          = document.Detail[q].TaxCode;
+                        oDoc.Lines.WarehouseCode    = document.Detail[q].WhsCode;
                         oDoc.Lines.Currency         = document.Detail[q].Currency;
+
+                        AddDocumentBase(oDoc.Lines, document.Detail[q], type);
+
+                        oDoc.Lines.Add();
                     }
 
                     if (oDoc.Add() != 0)
@@ -82,12 +89,24 @@ namespace salesCVM.SAP
                 }
             }
         }
-
-        private void AddUserFieldHeader(Documents doc) {
+        private void AddUserFieldHeader(Documents doc, string Usuario) {
             doc.UserFields.Fields.Item("U_Origen").Value = "P";
             doc.UserFields.Fields.Item("U_cvmsSucursal").Value = "Matriz";
-            doc.UserFields.Fields.Item("U_cvmsUser").Value = "MLF";
+            doc.UserFields.Fields.Item("U_cvmsUser").Value = Usuario;
             doc.UserFields.Fields.Item("U_cvmsHora").Value = DateTime.Now.ToString("HH:mm:ss"); ;
+        }
+        private void AddDocumentBase(Document_Lines docLinesSAP, DocumentLines docLines, int type) {
+            switch (type)
+            {
+                case 17: //Order
+                    if (docLines.DocEntry > 0)
+                    {
+                        docLinesSAP.BaseEntry = docLines.DocEntry;
+                        docLinesSAP.BaseType = 23;
+                        docLinesSAP.BaseLine = docLines.LineNum;
+                    }
+                    break;
+            }
         }
     }
 }

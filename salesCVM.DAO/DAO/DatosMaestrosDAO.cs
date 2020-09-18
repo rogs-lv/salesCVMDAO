@@ -15,10 +15,9 @@ namespace salesCVM.DAO.DAO
         IDBAdapter DBAdapter;
         Log Lg;
         public DatosMaestrosDAO() {
-            DBAdapter = DBFactory.GetDefaultAdapter();
-            Lg = Log.getIntance();
+            DBAdapter   = DBFactory.GetDefaultAdapter();
+            Lg          = Log.getIntance();
         }
-
         public bool GetDatosMaestros<T>(ref List<T> ListDatosMaestros, int type, string WhsCode, string PriceList)
         {
             IDbConnection connection = DBAdapter.GetConnection();
@@ -40,6 +39,5 @@ namespace salesCVM.DAO.DAO
                 return false;
             }
         }
-
     }
 }

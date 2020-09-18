@@ -47,19 +47,17 @@ namespace salesCVM.Controllers
                     return Content(HttpStatusCode.BadRequest, "Sentencia no reconocida");
             }
         }
-
         [HttpPost]
         [Route("CreateDocument")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public IHttpActionResult CreateDocument([FromBody]DocSAP document, int typeDocument)
+        public IHttpActionResult CreateDocument([FromBody]DocSAP document, int typeDocument, string usuario)
         {
             Mensajes response = new Mensajes();
-            if (MktDao.CreateDocumentSAP(ref response, document, typeDocument)) 
+            if (MktDao.CreateDocumentSAP(ref response, document, typeDocument, usuario)) 
                 return Content(HttpStatusCode.OK, response);
             else
                 return Content(HttpStatusCode.Conflict, response.Mensaje);
         }
-
         [HttpGet]
         [Route("GetDocument")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
@@ -77,6 +75,24 @@ namespace salesCVM.Controllers
                 return Content(HttpStatusCode.OK, document);
             else
                 return Content(HttpStatusCode.NotFound, $"No se encontró ningun registro con el documento: {DocEntry} ");
+        }
+        [HttpGet]
+        [Route("GetDocumentSAP")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public IHttpActionResult GetDocumentSAP(int docEntry = 0) {
+            Mensajes msj = new Mensajes();
+            DocSAP doc = new DocSAP();
+            List<Document> listDoc = new List<Document>();
+
+            if (MktDao.GetDocumentsSAP(ref msj, ref doc, ref listDoc, docEntry))
+            {
+                if (docEntry > 0)
+                    return Content(HttpStatusCode.OK, doc);
+                else
+                    return Content(HttpStatusCode.OK, listDoc);
+            }
+            else
+                return Content(HttpStatusCode.NotFound, msj.Mensaje);
         }
     }
 }

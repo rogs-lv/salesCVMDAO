@@ -26,5 +26,6 @@ namespace salesCVM.Models
         public decimal Price { get; set; }
         public int ItmsGrpCod { get; set; }
         public string ItmsGrpNam { get; set; }
+        public string WhsCode { get; set; }
     }
 }

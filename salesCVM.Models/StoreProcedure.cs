@@ -56,6 +56,13 @@ namespace salesCVM.Models
                 return $"{command} \"IDS_GetDocument\" ";
             }
         }
+        public string SpDocumentSAP
+        {
+            get
+            {
+                return $"{command} \"IDS_GetDocumentSAP\" ";
+            }
+        }
         #endregion
 
         #region Datos Maestros

@@ -13,6 +13,7 @@ namespace salesCVM.Models
 
     public class Document {
         public int DocEntry { get; set; }
+        public int DocNum { get; set; }
         public string CardCode { get; set; }
         public string CardName { get; set; }
         public DateTime DocDate { get; set; }
@@ -25,6 +26,7 @@ namespace salesCVM.Models
 
     public class DocumentLines {
         public int DocEntry { get; set; }
+        public int LineNum { get; set; }
         public string ItemCode { get; set; }
         public string ItemName { get; set; }
         public double Quantity { get; set; }
@@ -33,5 +35,6 @@ namespace salesCVM.Models
         public double Discount { get; set; }
         public string Currency { get; set; }
         public string TaxCode { get; set; }
+        public string WhsCode { get; set; }
     }
 }

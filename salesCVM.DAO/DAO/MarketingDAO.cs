@@ -157,7 +157,7 @@ namespace salesCVM.DAO.DAO
         /// <param name="modelo"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public bool CreateDocumentSAP(ref Mensajes msjCreate, DocSAP document, int type) {
+        public bool CreateDocumentSAP(ref Mensajes msjCreate, DocSAP document, int type, string Usuario) {
             IDbConnection connection = dBAdapter.GetConnection();
             try
             {
@@ -167,7 +167,7 @@ namespace salesCVM.DAO.DAO
                 Models.DatosConexion datosSAP = connection.Query<Models.DatosConexion>($"{spDatosConexion}").FirstOrDefault();
                 Models.SAP modeloSap = encry.DescryConexionSAP(datosSAP.CadenaConexion);
 
-                if (iSap.CreateDocument(ref msjCreate, document, modeloSap, type))
+                if (iSap.CreateDocument(ref msjCreate, document, modeloSap, type, Usuario))
                     return true;
                 else 
                     return false;
@@ -175,6 +175,50 @@ namespace salesCVM.DAO.DAO
             catch (Exception ex)
             {
                 msjCreate.Mensaje = ex.Message;
+                lg.Registrar(ex, this.GetType().FullName);
+                return false;
+            }
+        }
+        /// <summary>
+        /// Get document creted sap
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="msjConsulta"></param>
+        /// <param name="listDocuments"></param>
+        /// <param name="docEntry"></param>
+        /// <returns>return true or false to process completed</returns>
+        public bool GetDocumentsSAP<T>(ref Mensajes msjConsulta , ref DocSAP document, ref List<T> listDocuments, int docEntry = 0) {
+            IDbConnection connection = dBAdapter.GetConnection();
+            try
+            {
+                if (connection.State == ConnectionState.Closed)
+                    throw new Exception("Connection not available or closed");
+
+                if (docEntry > 0)//documento de sap
+                {
+                    SqlMapper.GridReader mult;
+                    mult = connection.QueryMultiple($"{SpDocumentSAP} {docEntry}");
+                    document.Header = mult.Read<Document>().First();
+                    document.Detail = mult.Read<DocumentLines>().ToList();
+                    if (document.Header != null)
+                        return true;
+                    else {
+                        msjConsulta.Mensaje = "No se recupero ningun documento";
+                        return false;
+                    }
+                } else { //Lista de documentos abiertos
+                    listDocuments = connection.Query<T>($"{ SpDocumentSAP}").ToList();
+                    if (listDocuments.Count > 0)
+                        return true;
+                    else {
+                        msjConsulta.Mensaje = $"No se recupero ningun documento";
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                msjConsulta.Mensaje = ex.Message;
                 lg.Registrar(ex, this.GetType().FullName);
                 return false;
             }
