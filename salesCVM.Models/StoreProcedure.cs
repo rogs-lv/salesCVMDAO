@@ -73,6 +73,27 @@ namespace salesCVM.Models
                 return $"{command} \"IDS_GetDatosMaestros\" ";
             }
         }
+        public string SpGetSN
+        {
+            get
+            {
+                return $"{command} \"IDS_GetSN\" ";
+            }
+        }
+        public string SpGetItems
+        {
+            get
+            {
+                return $"{command} \"IDS_GetItems\" ";
+            }
+        }
+        public string SpDestinos
+        {
+            get
+            {
+                return $"{command} \"IDS_Destinos\" ";
+            }
+        }
         #endregion
     }
 }

@@ -12,4 +12,9 @@ namespace salesCVM.Models
         public int DocNum { get; set; }
         public string Mensaje { get; set; }
     }
+
+    public class MensajesObj {
+        public string Code { get; set; }
+        public string Mensaje { get; set; }
+    }
 }
