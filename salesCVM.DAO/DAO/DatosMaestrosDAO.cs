@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 using salesCVM.Utilities;
 using salesCVM.Models;
 using System.Data;
+using salesCVM.DAO.Util;
+using salesCVM.SAP.Interface;
+using salesCVM.SAP;
 
 namespace salesCVM.DAO.DAO
 {
@@ -14,9 +17,13 @@ namespace salesCVM.DAO.DAO
     {
         IDBAdapter DBAdapter;
         Log Lg;
+        private Encrypt Encry;
+        private ISAPMasterData iSapMD;
         public DatosMaestrosDAO() {
             DBAdapter   = DBFactory.GetDefaultAdapter();
             Lg          = Log.getIntance();
+            Encry       = new Encrypt();
+            iSapMD      = new SAPMasterData();
         }
         public bool GetDatosMaestros<T>(ref List<T> ListDatosMaestros, int type, string WhsCode, string PriceList)
         {
@@ -156,6 +163,50 @@ namespace salesCVM.DAO.DAO
                     connection.Close();
                     connection.Dispose();
                 }
+            }
+        }
+        public bool CrearSocioSAP(ref MensajesObj msjCreate, BP document, string usuario) {
+            IDbConnection connection = DBAdapter.GetConnection();
+            try
+            {
+                if (connection.State == ConnectionState.Closed)
+                    throw new Exception("Connection not available or closed");
+
+                Models.DatosConexion datosSAP = connection.Query<Models.DatosConexion>($"{spDatosConexion}").FirstOrDefault();
+                Models.SAP modeloSap = Encry.DescryConexionSAP(datosSAP.CadenaConexion);
+
+                if (iSapMD.CreateBusnessPartner(ref msjCreate, modeloSap, document, usuario))
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                msjCreate.Mensaje = ex.Message;
+                Lg.Registrar(ex, this.GetType().FullName);
+                return false;
+            }
+        }
+        public bool UpdateSocioSAP(ref MensajesObj msjUpdate, BP document, string usuario) {
+            IDbConnection connection = DBAdapter.GetConnection();
+            try
+            {
+                if (connection.State == ConnectionState.Closed)
+                    throw new Exception("Connection not available or closed");
+
+                Models.DatosConexion datosSAP = connection.Query<Models.DatosConexion>($"{spDatosConexion}").FirstOrDefault();
+                Models.SAP modeloSap = Encry.DescryConexionSAP(datosSAP.CadenaConexion);
+
+                if (iSapMD.UpdateBusnessPartner(ref msjUpdate, modeloSap, document, usuario))
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                msjUpdate.Mensaje = ex.Message;
+                Lg.Registrar(ex, this.GetType().FullName);
+                return false;
             }
         }
     }

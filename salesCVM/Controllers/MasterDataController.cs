@@ -4,10 +4,8 @@ using System.Linq;
 using System.Net;
 using System.Web.Http;
 using salesCVM.Models;
-using salesCVM.DAO;
 using salesCVM.DAO.DAO;
 using System.Web.Http.Cors;
-using System.Web.UI.WebControls;
 
 namespace salesCVM.Controllers
 {
@@ -72,21 +70,6 @@ namespace salesCVM.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("CreateBusnessPartner")]
-        [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public IHttpActionResult CreateBusnessPartner(BP socioNegocios) {
-            return null;
-        }
-
-        [HttpPatch]
-        [Route("UpdateBusnessPartner")]
-        [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public IHttpActionResult UpdateBusnessPartner(BP socioNegocios)
-        {
-            return null;
-        }
-
         [HttpGet]
         [Route("GetItems")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
@@ -144,6 +127,37 @@ namespace salesCVM.Controllers
                 return Content(HttpStatusCode.OK, new { country = ListPaises, state = ListEstados });
             else
                 return Content(HttpStatusCode.OK, msj);
+        }
+
+        [HttpPost]
+        [Route("CreateBusnessPartner")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public IHttpActionResult CreateBusnessPartner([FromBody] BP document, string usuario)
+        {
+            MensajesObj msj = new MensajesObj();
+            if (string.IsNullOrEmpty(document.Header.CardCode))
+                return Content(HttpStatusCode.BadRequest, "Debe ingresar datos para el socio de negocios");
+
+            if (DtsDao.CrearSocioSAP(ref msj, document, usuario))
+                return Content(HttpStatusCode.OK, msj.Code);
+            else
+                return Content(HttpStatusCode.BadRequest, msj.Mensaje);
+
+        }
+
+        [HttpPatch]
+        [Route("UpdateBusnessPartner")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public IHttpActionResult UpdateBusnessPartner([FromBody] BP document, string usuario)
+        {
+            if (string.IsNullOrEmpty(document.Header.CardCode))
+                return Content(HttpStatusCode.BadRequest, "Debe especificar el socio de negocios que quiere actualizar");
+
+            MensajesObj msj = new MensajesObj();
+            if (DtsDao.UpdateSocioSAP(ref msj, document, usuario))
+                return Content(HttpStatusCode.OK, msj.Code);
+            else
+                return Content(HttpStatusCode.BadRequest, msj.Mensaje);
         }
     }
 }

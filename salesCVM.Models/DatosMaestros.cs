@@ -40,6 +40,7 @@ namespace salesCVM.Models
         public string   E_Mail { get; set; }
     }
     public class Direcciones {
+        public int      LineNum { get; set; }
         public string   Address { get; set; }
         public char     AdresType { get; set; }
         public string   Country { get; set; }
