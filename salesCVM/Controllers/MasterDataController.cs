@@ -105,15 +105,29 @@ namespace salesCVM.Controllers
         [HttpPost]
         [Route("CreateItems")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public IHttpActionResult CreateItems() {
-            return Ok();
+        public IHttpActionResult CreateItems([FromBody]ItemSAP documento, string usuario) {
+            MensajesObj msj = new MensajesObj();
+            if (string.IsNullOrEmpty(documento.Header.ItemCode))
+                return Content(HttpStatusCode.BadRequest, "Debe ingresar datos para el artículo");
+
+            if (DtsDao.CrearArticuloSAP(ref msj, documento, usuario))
+                return Content(HttpStatusCode.OK, msj.Code);
+            else
+                return Content(HttpStatusCode.BadRequest, msj.Mensaje);
         }
         
         [HttpPatch]
         [Route("UpdateItem")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public IHttpActionResult UpdateItem() {
-            return Ok();
+        public IHttpActionResult UpdateItem([FromBody] ItemSAP documento, string usuario) {
+            MensajesObj msj = new MensajesObj();
+            if (string.IsNullOrEmpty(documento.Header.ItemCode))
+                return Content(HttpStatusCode.BadRequest, "Debe especcificar el artículo que quiere actualizar");
+
+            if (DtsDao.UpdateArticuloSAP(ref msj, documento, usuario))
+                return Content(HttpStatusCode.OK, msj.Code);
+            else
+                return Content(HttpStatusCode.BadRequest, msj.Mensaje);
         }
 
         [HttpGet]
@@ -158,6 +172,43 @@ namespace salesCVM.Controllers
                 return Content(HttpStatusCode.OK, msj.Code);
             else
                 return Content(HttpStatusCode.BadRequest, msj.Mensaje);
+        }
+
+        [HttpGet]
+        [Route("GetPrecios")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public IHttpActionResult GetPrecios(int type, string itemcode = "", int listnum = 0) {
+            string msj = string.Empty;
+            switch (type)
+            {
+                case 1:
+                    List<PriceList> ListaPrecios = new List<PriceList>();
+                    if (DtsDao.GetPrecios(ref ListaPrecios, ref msj, type, itemcode, listnum))
+                        return Content(HttpStatusCode.OK, ListaPrecios);
+                    else
+                        return Content(HttpStatusCode.NotFound, "No se recuperaron listas de precios");
+                case 2:
+                    List<PrecioArticulo> ListaPreArt = new List<PrecioArticulo>();
+                    if (DtsDao.GetPrecios(ref ListaPreArt, ref msj, type, itemcode, listnum))
+                        return Content(HttpStatusCode.OK, ListaPreArt);
+                    else
+                        return Content(HttpStatusCode.NotFound, "No se recuperaró precio para el artículo");
+                default:
+                    return Content(HttpStatusCode.NotFound, "Tipo desconocido");
+            }
+        }
+
+        [HttpGet]
+        [Route("GetOpciones")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public IHttpActionResult GetOpciones(int type) {
+            List<UoM> UnidadMedidoa = new List<UoM>();
+            List<GrupoArticulos> GrpArt = new List<GrupoArticulos>();
+            string msj = string.Empty;
+            if (DtsDao.GetOpciones(ref UnidadMedidoa, ref GrpArt, ref msj, type))
+                return Content(HttpStatusCode.OK, new { Grupo = GrpArt, Unidad = UnidadMedidoa });
+            else
+                return Content(HttpStatusCode.NotFound, string.IsNullOrEmpty(msj) ? "No se recuperaron opciones" : msj);
         }
     }
 }

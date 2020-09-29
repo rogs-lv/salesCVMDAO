@@ -58,6 +58,11 @@ namespace salesCVM.Models
         public List<Direcciones>    TabDireccion { get; set; }
     }
 
+    public class ItemSAP
+    {
+        public ItemData Header { get; set; }
+        public List<Propiedad> TabsProps { get; set; }
+    }
     public class ItemData
     {
         public string       ItemCode { get; set; }
@@ -66,46 +71,62 @@ namespace salesCVM.Models
         public int          UgpEntry { get; set; }
         public int          ListNum { get; set; }
         public decimal      Price { get; set; }
-        public char         InvntItem { get; set; }
-        public char         SellItem { get; set; }
-        public char         PrchseItem { get; set; }
-        public char         WTLiable { get; set; }
-        public char         VATLiable { get; set; }
-        public char         validFor { get; set; }
+        public bool         InvntItem { get; set; }
+        public bool         SellItem { get; set; }
+        public bool         PrchseItem { get; set; }
+        public bool         WTLiable { get; set; }
+        public bool         VATLiable { get; set; }
+        public bool         validFor { get; set; }
+        public string       CodeBars { get; set; }
     }
     public class Propiedad
     {
-        public int ItmsTypCod { get; set; }
-        public string ItmsGrpNam { get; set; }
-        public bool Status { get; set; }
+        public int          ItmsTypCod { get; set; }
+        public string       ItmsGrpNam { get; set; }
+        public bool         Status { get; set; }
     }
     public class Inventario
     {
-        public string WhsCode { get; set; }
-        public string WhsName { get; set; }
-        public char Locked { get; set; }
-        public double OnHand { get; set; }
+        public string       WhsCode { get; set; }
+        public string       WhsName { get; set; }
+        public char         Locked { get; set; }
+        public double       OnHand { get; set; }
     }
     
     public class Monedas
     {
-        public string CurrCode { get; set; }
-        public string CurrName { get; set; }
+        public string       CurrCode { get; set; }
+        public string       CurrName { get; set; }
     }
     public class PriceList
     {
-        public int ListNum { get; set; }
-        public string ListName { get; set; }
+        public int          ListNum { get; set; }
+        public string       ListName { get; set; }
     }
     public class Country
     {
-        public string Code { get; set; }
-        public string Name { get; set; }
+        public string       Code { get; set; }
+        public string       Name { get; set; }
     }
     public class State
     {
-        public string Code { get; set; }
-        public string Name { get; set; }
-        public string Country { get; set; }
+        public string       Code { get; set; }
+        public string       Name { get; set; }
+        public string       Country { get; set; }
+    }
+    public class PrecioArticulo {
+        public decimal      Price { get; set; }
+        public string       ItemCode { get; set; }
+    }
+
+    public class UoM {
+        public int UgpEntry { get; set; }
+        public string UgpCode { get; set; }
+        public string UgpName { get; set; }
+    }
+    public class GrupoArticulos
+    {
+        public int ItmsGrpCod { get; set; }
+        public string ItmsGrpNam { get; set; }
     }
 }

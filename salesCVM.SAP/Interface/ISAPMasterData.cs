@@ -11,7 +11,7 @@ namespace salesCVM.SAP.Interface
     {
         bool CreateBusnessPartner(ref MensajesObj msjCreate, Models.SAP modelo, BP socio, string Usuario);
         bool UpdateBusnessPartner(ref MensajesObj msjUpd, Models.SAP modelo, BP socio, string Usuario);
-        bool CreateItem(ref MensajesObj msjCreate, Models.SAP modelo, ItemData item, List<Propiedad> propiedades, List<Inventario> inventario);
-        bool UpdateItem(ref MensajesObj msjCreate, Models.SAP modelo, ItemData item, Propiedad propiedades, Inventario inventario);
+        bool CreateItem(ref MensajesObj msjCreate, Models.SAP modelo, ItemSAP item, string Usuario);
+        bool UpdateItem(ref MensajesObj msjCreate, Models.SAP modelo, ItemSAP item, string Usuario);
     }
 }

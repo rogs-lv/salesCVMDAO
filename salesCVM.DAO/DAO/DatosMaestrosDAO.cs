@@ -209,5 +209,112 @@ namespace salesCVM.DAO.DAO
                 return false;
             }
         }
+        public bool GetPrecios<T>(ref List<T> lista, ref string msj, int accion, string itemcode, int listnum) {
+            IDbConnection connection = DBAdapter.GetConnection();
+            try
+            {
+                if (connection.State == ConnectionState.Closed)
+                    throw new Exception("Connection not available or closed");
+
+                lista = connection.Query<T>($"{SpGetPrecios} {accion},'{itemcode}',{listnum}").ToList(); ;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Lg.Registrar(ex, this.GetType().FullName);
+                msj = ex.Message;
+                return false;
+            }
+            finally
+            {
+                if (connection != null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+        }
+        public bool GetOpciones(ref List<UoM> UnidadMedida, ref List<GrupoArticulos> GrpArticulos, ref string msj, int accion)
+        {
+            IDbConnection connection = DBAdapter.GetConnection();
+            SqlMapper.GridReader mult;
+            try
+            {
+                if (connection.State == ConnectionState.Closed)
+                    throw new Exception("Connection not available or closed");
+
+                mult = connection.QueryMultiple($"{SpGetOpciones} {accion}");
+                
+                if (mult != null)
+                {
+                    UnidadMedida = mult.Read<UoM>().ToList();
+                    GrpArticulos = mult.Read<GrupoArticulos>().ToList();
+                    return true;
+                }
+                else
+                {
+                    msj = $"No se recuperarón opciones";
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Lg.Registrar(ex, this.GetType().FullName);
+                msj = ex.Message;
+                return false;
+            }
+            finally
+            {
+                if (connection != null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+        }
+        public bool CrearArticuloSAP(ref MensajesObj msjCreate, ItemSAP document, string usuario) {
+            IDbConnection connection = DBAdapter.GetConnection();
+            try
+            {
+                if (connection.State == ConnectionState.Closed)
+                    throw new Exception("Connection not available or closed");
+
+                Models.DatosConexion datosSAP = connection.Query<Models.DatosConexion>($"{spDatosConexion}").FirstOrDefault();
+                Models.SAP modeloSap = Encry.DescryConexionSAP(datosSAP.CadenaConexion);
+
+                if (iSapMD.CreateItem(ref msjCreate, modeloSap, document, usuario))
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                msjCreate.Mensaje = ex.Message;
+                Lg.Registrar(ex, this.GetType().FullName);
+                return false;
+            }
+        }
+        public bool UpdateArticuloSAP(ref MensajesObj msjCreate, ItemSAP document, string usuario) {
+            IDbConnection connection = DBAdapter.GetConnection();
+            try
+            {
+                if (connection.State == ConnectionState.Closed)
+                    throw new Exception("Connection not available or closed");
+
+                Models.DatosConexion datosSAP = connection.Query<Models.DatosConexion>($"{spDatosConexion}").FirstOrDefault();
+                Models.SAP modeloSap = Encry.DescryConexionSAP(datosSAP.CadenaConexion);
+
+                if (iSapMD.UpdateItem(ref msjCreate, modeloSap, document, usuario))
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                msjCreate.Mensaje = ex.Message;
+                Lg.Registrar(ex, this.GetType().FullName);
+                return false;
+            }
+        }
     }
 }

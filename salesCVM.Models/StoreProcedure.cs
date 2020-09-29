@@ -94,6 +94,20 @@ namespace salesCVM.Models
                 return $"{command} \"IDS_Destinos\" ";
             }
         }
+        public string SpGetPrecios
+        {
+            get
+            {
+                return $"{command} \"IDS_GetPrecios\" ";
+            }
+        }
+        public string SpGetOpciones
+        {
+            get
+            {
+                return $"{command} \"IDS_GetOpciones\" ";
+            }
+        }
         #endregion
     }
 }
