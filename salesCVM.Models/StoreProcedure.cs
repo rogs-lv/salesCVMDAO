@@ -109,5 +109,32 @@ namespace salesCVM.Models
             }
         }
         #endregion
+
+        #region CRM
+        public string SpGetDatosCRM
+        {
+            get
+            {
+                return $"{command} \"IDS_GetDatosCRM\" ";
+            }
+        }
+        #endregion
+
+        #region Dashboard
+        public string SpGetPromNoticias
+        {
+            get
+            {
+                return $"{command} \"IDS_GetPromNoticias\" ";
+            }
+        }
+        public string SpCuotasVentas
+        {
+            get
+            {
+                return $"{command} \"IDS_CuotasVentas\" ";
+            }
+        }
+        #endregion
     }
 }

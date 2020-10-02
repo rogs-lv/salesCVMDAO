@@ -19,7 +19,8 @@ namespace salesCVM.Models
         public string TaxCode { get; set; }
         public int ListNum { get; set; }
         public string WhsCode { get; set; }
-        //public Rol Role { get; set; }
+        public double Rate { get; set; }
+        public string U_Sucursal { get; set; }
         public string Token { get; set; }
     }
 

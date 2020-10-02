@@ -201,6 +201,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DAO\ConfiguracionDAO.cs" />
+    <Compile Include="DAO\CrmDAO.cs" />
+    <Compile Include="DAO\DashboardDAO.cs" />
     <Compile Include="DAO\DatosMaestrosDAO.cs" />
     <Compile Include="DAO\LoginDAO.cs" />
     <Compile Include="DAO\MarketingDAO.cs" />
