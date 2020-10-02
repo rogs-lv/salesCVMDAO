@@ -49,5 +49,20 @@ namespace salesCVM.Controllers
             else
                 return Content(HttpStatusCode.NotFound, new { codigo = -1, mensaje = msj });
         }
+        [HttpGet]
+        [Route("GetGrafica")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public IHttpActionResult GetGrafica(string usuario) {
+            if (string.IsNullOrEmpty(usuario))
+                return Content(HttpStatusCode.BadRequest, "El usuario es requerido");
+
+            List<Grafica> DtsGrafica = new List<Grafica>();
+            string msj = string.Empty;
+
+            if (dashDAO.GetDatosGrafica(ref DtsGrafica, ref msj, usuario))
+                return Content(HttpStatusCode.OK, new { codigo = 0, mensaje = DtsGrafica });
+            else
+                return Content(HttpStatusCode.NotFound, new { codigo = -1, mensaje = msj});
+        }
     }
 }

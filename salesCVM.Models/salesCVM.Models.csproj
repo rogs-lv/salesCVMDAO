@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="Configuracion.cs" />
     <Compile Include="CRM.cs" />
+    <Compile Include="Dashboard.cs" />
     <Compile Include="DatosMaestros.cs" />
     <Compile Include="Marketing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

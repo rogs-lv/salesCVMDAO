@@ -128,6 +128,13 @@ namespace salesCVM.Models
                 return $"{command} \"IDS_GetPromNoticias\" ";
             }
         }
+        public string SpCuotasVentas
+        {
+            get
+            {
+                return $"{command} \"IDS_CuotasVentas\" ";
+            }
+        }
         #endregion
     }
 }

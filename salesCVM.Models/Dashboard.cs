@@ -13,4 +13,15 @@ namespace salesCVM.Models
         public string U_Anuncio { get; set; }
         public char U_Tipo { get; set; }
     }
+
+    public class Grafica
+    {
+        public int U_Mes { get; set; }
+        public decimal U_Cuota { get; set; }
+        public decimal Ventas { get; set; }
+    }
+    public class GraficaY
+    {
+
+    }
 }
