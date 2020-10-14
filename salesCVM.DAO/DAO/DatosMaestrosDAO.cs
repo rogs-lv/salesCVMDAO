@@ -316,5 +316,30 @@ namespace salesCVM.DAO.DAO
                 return false;
             }
         }
+        public bool GetEmpleadosVts(ref List<Vendedor> ListVendedor, ref string msj, int type) {
+            IDbConnection connection = DBAdapter.GetConnection();
+            try
+            {
+                if (connection.State == ConnectionState.Closed)
+                    throw new Exception("Connection not available or closed");
+
+                ListVendedor = connection.Query<Vendedor>($"{SpGetEmpleados}  {type}").ToList();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Lg.Registrar(ex, this.GetType().FullName);
+                msj = ex.Message;
+                return false;
+            }
+            finally
+            {
+                if (connection != null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+        }
     }
 }

@@ -108,6 +108,13 @@ namespace salesCVM.Models
                 return $"{command} \"IDS_GetOpciones\" ";
             }
         }
+        public string SpGetEmpleados
+        {
+            get
+            {
+                return $"{command} \"IDS_GetEmpleados\" ";
+            }
+        }
         #endregion
 
         #region CRM

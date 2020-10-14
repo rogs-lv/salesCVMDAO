@@ -54,6 +54,7 @@ namespace salesCVM.Controllers
             string msj = string.Empty;
             switch (type) {
                 case 1:
+                case 4:
                     List<Socios> ListaSocios = new List<Socios>();
                     if (DtsDao.GetInformacionSocios(ref ListaSocios, ref msj, type, cardcode))
                         return Content(HttpStatusCode.OK, ListaSocios);
@@ -209,6 +210,18 @@ namespace salesCVM.Controllers
                 return Content(HttpStatusCode.OK, new { Grupo = GrpArt, Unidad = UnidadMedidoa });
             else
                 return Content(HttpStatusCode.NotFound, string.IsNullOrEmpty(msj) ? "No se recuperaron opciones" : msj);
+        }
+
+        [HttpGet]
+        [Route("GetEmpleadosVentas")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public IHttpActionResult GetEmpleadosVentas(int type) {
+            List<Vendedor> ListVendedor = new List<Vendedor>();
+            string msj = string.Empty;
+            if (DtsDao.GetEmpleadosVts(ref ListVendedor, ref msj, type))
+                return Content(HttpStatusCode.OK, ListVendedor);
+            else
+                return Content(HttpStatusCode.NotFound, string.IsNullOrEmpty(msj) ? "No se recuperaron vendedores" : msj);
         }
     }
 }

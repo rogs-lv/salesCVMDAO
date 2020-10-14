@@ -15,6 +15,7 @@ namespace salesCVM.Models
         public string U_SlpCode { get; set; }
         public string U_SlpName { get; set; }
         public char U_CambioPrecio { get; set; }
+        public char U_CambioSN { get; set; }
         public decimal U_PrcntjDescMax { get; set; }
         public string TaxCode { get; set; }
         public int ListNum { get; set; }

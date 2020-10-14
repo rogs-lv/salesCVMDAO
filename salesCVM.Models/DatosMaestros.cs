@@ -21,6 +21,7 @@ namespace salesCVM.Models
         public string   ItemName { get; set; }
         public char     VATLiable { get; set; }
         public string   TaxCodeAR { get; set; }
+        public double   Rate { get; set; }
         public char     IndirctTax { get; set; }
         public double   Stock { get; set; }
         public string   SalUnitMsr { get; set; }
@@ -128,5 +129,11 @@ namespace salesCVM.Models
     {
         public int ItmsGrpCod { get; set; }
         public string ItmsGrpNam { get; set; }
+    }
+
+    public class Vendedor
+    {
+        public int SlpCode { get; set; }
+        public string SlpName { get; set; }
     }
 }

@@ -35,6 +35,7 @@ namespace salesCVM.Models
         public double Discount { get; set; }
         public string Currency { get; set; }
         public string TaxCode { get; set; }
+        public double Rate { get; set; }
         public string WhsCode { get; set; }
     }
 }
