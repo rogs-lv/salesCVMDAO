@@ -130,10 +130,4 @@ namespace salesCVM.Models
         public int ItmsGrpCod { get; set; }
         public string ItmsGrpNam { get; set; }
     }
-
-    public class Vendedor
-    {
-        public int SlpCode { get; set; }
-        public string SlpName { get; set; }
-    }
 }

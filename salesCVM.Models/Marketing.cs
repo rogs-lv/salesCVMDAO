@@ -22,6 +22,7 @@ namespace salesCVM.Models
         public char Status { get; set; }
         public int DocEntrySAP { get; set; }
         public int DocNumSAP { get; set; }
+        public int SlpCode { get; set; }
     }
 
     public class DocumentLines {

@@ -30,14 +30,16 @@ namespace salesCVM.SAP
                     else if (type == 17)
                         oDoc = (Documents)_oCompany.GetBusinessObject(BoObjectTypes.oOrders);
 
-                    oDoc.CardCode       = document.Header.CardCode;
-                    oDoc.DocDate        = DateTime.Now;
-                    oDoc.TaxDate        = DateTime.Now;
+                    oDoc.CardCode           = document.Header.CardCode;
+                    oDoc.CardName           = document.Header.CardName;
+                    oDoc.DocDate            = DateTime.Now;
+                    oDoc.TaxDate            = DateTime.Now;
                     if (type == 17)
-                        oDoc.DocDueDate = document.Header.DocDate;
-                    oDoc.NumAtCard      = document.Header.Reference;
-                    oDoc.Comments       = document.Header.Comments;
-                    oDoc.DocCurrency    = document.Detail[0].Currency;
+                        oDoc.DocDueDate     = document.Header.DocDate;
+                    oDoc.NumAtCard          = document.Header.Reference;
+                    oDoc.Comments           = document.Header.Comments;
+                    oDoc.DocCurrency        = document.Detail[0].Currency;
+                    oDoc.SalesPersonCode    = document.Header.SlpCode;
 
                     AddUserFieldHeader(oDoc, Usuario);
 
@@ -47,7 +49,7 @@ namespace salesCVM.SAP
                         oDoc.Lines.Quantity         = document.Detail[q].Quantity;
                         oDoc.Lines.UnitPrice        = (double)document.Detail[q].Price;
                         oDoc.Lines.DiscountPercent  = document.Detail[q].Discount;
-                        oDoc.Lines.TaxCode          = document.Detail[q].TaxCode;
+                        oDoc.Lines.TaxCode          = string.IsNullOrEmpty(document.Detail[q].TaxCode) ? "B00" : document.Detail[q].TaxCode;
                         oDoc.Lines.WarehouseCode    = document.Detail[q].WhsCode;
                         oDoc.Lines.Currency         = document.Detail[q].Currency;
 
