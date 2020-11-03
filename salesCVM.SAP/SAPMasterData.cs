@@ -28,16 +28,17 @@ namespace salesCVM.SAP
             {
                 if (isap.Conectar(ref msj, modelo))
                 {
-                    _oCompany = isap.GetCompany();
-
+                    _oCompany           = isap.GetCompany();
                     BusinessPartners bp = (BusinessPartners)_oCompany.GetBusinessObject(BoObjectTypes.oBusinessPartners);
 
-                    // bp.Series = int.Parse(socio.Header.Series);
-                    bp.CardCode = socio.Header.CardCode;
-                    bp.CardName = socio.Header.CardName;
-                    bp.FederalTaxID = socio.Header.LicTradNum;
-                    bp.CardType = CardTypes(socio.Header.CardType);
-                    bp.EmailAddress = socio.Header.E_Mail;
+                    if (int.Parse(socio.Header.Serie) > 0)
+                        bp.Series           = int.Parse(socio.Header.Serie);
+                    bp.CardCode         = socio.Header.CardCode;
+                    bp.CardName         = socio.Header.CardName;
+                    bp.FederalTaxID     = socio.Header.LicTradNum;
+                    bp.CardType         = CardTypes(socio.Header.CardType);
+                    bp.EmailAddress     = socio.Header.E_Mail;
+                    bp.Website          = socio.Header.IntrntSite;
 
                     //AddUserFieldHeader(bp, usuario)
 
@@ -57,6 +58,21 @@ namespace salesCVM.SAP
                         bp.Addresses.Add();
                         //} else { // Embarque
                         //}
+                    }
+
+                    foreach (Contacto cnt in socio.TabContacto) 
+                    {
+                        bp.ContactEmployees.Name            = cnt.Name;
+                        bp.ContactEmployees.FirstName       = cnt.FirstName;
+                        bp.ContactEmployees.Title           = cnt.Title;
+                        bp.ContactEmployees.MiddleName      = cnt.MiddleName;
+                        bp.ContactEmployees.Position        = cnt.Position;
+                        bp.ContactEmployees.LastName        = cnt.LastName;
+                        bp.ContactEmployees.Address         = cnt.Address;
+                        bp.ContactEmployees.Phone1          = cnt.Tel1;
+                        bp.ContactEmployees.MobilePhone     = cnt.Cellolar;
+                        bp.ContactEmployees.E_Mail          = cnt.E_MailL;
+                        bp.ContactEmployees.Add();
                     }
 
                     if (bp.Add() != 0)
@@ -99,18 +115,19 @@ namespace salesCVM.SAP
             try
             {
                 if (isap.Conectar(ref msj, modelo)) {
-                    _oCompany = isap.GetCompany();
+                    _oCompany           = isap.GetCompany();
                     BusinessPartners bp = (BusinessPartners)_oCompany.GetBusinessObject(BoObjectTypes.oBusinessPartners);
                     bp.GetByKey(socio.Header.CardCode);
 
-                    bp.CardName = socio.Header.CardName;
+                    bp.CardName     = socio.Header.CardName;
                     bp.FederalTaxID = socio.Header.LicTradNum;
-                    bp.CardType = CardTypes(socio.Header.CardType);
+                    bp.CardType     = CardTypes(socio.Header.CardType);
                     bp.EmailAddress = socio.Header.E_Mail;
+                    bp.Website      = socio.Header.IntrntSite;
 
                     //Si existen direcciones las actualizamos
-                    int countAdress = bp.Addresses.Count;
-                    bool seActRegistros = false;
+                    int countAdress         = bp.Addresses.Count;
+                    bool seActRegistros     = false;
                     for (int i = 0; i< countAdress; i++) {
                         bp.Addresses.SetCurrentLine(i);
                         if (bp.Addresses.AddressName != "") { 
@@ -131,8 +148,33 @@ namespace salesCVM.SAP
                         }
                     }
 
+                    int countCntPerson  = bp.ContactEmployees.Count;
+                    bool seActPrsCnt    = false;
+                    for (int j = 0; j< countCntPerson; j++) {
+                        bp.ContactEmployees.SetCurrentLine(j);
+                        if (bp.ContactEmployees.Name != "") {
+                            int indiceCnt = IndiceContacto(socio.TabContacto, bp.ContactEmployees.Name, bp.ContactEmployees.InternalCode);
+                            if (indiceCnt > -1) {
+                                bp.ContactEmployees.Name            = socio.TabContacto[indiceCnt].Name;
+                                bp.ContactEmployees.FirstName       = socio.TabContacto[indiceCnt].FirstName;
+                                bp.ContactEmployees.Title           = socio.TabContacto[indiceCnt].Title;
+                                bp.ContactEmployees.MiddleName      = socio.TabContacto[indiceCnt].MiddleName;
+                                bp.ContactEmployees.Position        = socio.TabContacto[indiceCnt].Position;
+                                bp.ContactEmployees.LastName        = socio.TabContacto[indiceCnt].LastName;
+                                bp.ContactEmployees.Address         = socio.TabContacto[indiceCnt].Address;
+                                bp.ContactEmployees.Phone1          = socio.TabContacto[indiceCnt].Tel1;
+                                bp.ContactEmployees.MobilePhone     = socio.TabContacto[indiceCnt].Cellolar;
+                                bp.ContactEmployees.E_Mail          = socio.TabContacto[indiceCnt].E_MailL;
+                            }
+                            seActPrsCnt = true;
+                        }
+                    }
+
                     //Si no existen direcciones en SAP y el arreglo de direcciones tiene alguna nueva direccion
                     AddDirections(socio.TabDireccion, bp, seActRegistros);
+
+                    //Si no existen contactos en SAP y el arreglo de contactos tiene algun nuevo contacto
+                    AddContactos(socio.TabContacto, bp, seActPrsCnt);
 
                     if (bp.Update() != 0)
                     {
@@ -173,19 +215,41 @@ namespace salesCVM.SAP
                     if (seActRegistros)
                         bp.Addresses.Add();
 
-                    bp.Addresses.AddressName = dir.Address;
-                    bp.Addresses.AddressType = AdressTypes(dir.AdresType);
-                    bp.Addresses.Country = dir.Country;
-                    bp.Addresses.State = dir.State;
-                    bp.Addresses.County = dir.County;//Delegación/municipio
-                    bp.Addresses.City = dir.City;
-                    bp.Addresses.Street = dir.Street;
-                    bp.Addresses.StreetNo = dir.StreetNo;
-                    bp.Addresses.Block = dir.Block;
-                    bp.Addresses.ZipCode = dir.ZipCode.ToString();
+                    bp.Addresses.AddressName    = dir.Address;
+                    bp.Addresses.AddressType    = AdressTypes(dir.AdresType);
+                    bp.Addresses.Country        = dir.Country;
+                    bp.Addresses.State          = dir.State;
+                    bp.Addresses.County         = dir.County;//Delegación/municipio
+                    bp.Addresses.City           = dir.City;
+                    bp.Addresses.Street         = dir.Street;
+                    bp.Addresses.StreetNo       = dir.StreetNo;
+                    bp.Addresses.Block          = dir.Block;
+                    bp.Addresses.ZipCode        = dir.ZipCode.ToString();
                     
                     if(!seActRegistros)
                         bp.Addresses.Add();
+                }
+            }
+        }
+        private void AddContactos(List<Contacto> PrsContacto, IBusinessPartners bp, bool seActContacto) {
+            List<Contacto> listNuevoContacto = NuevoContacto(PrsContacto);
+            if (bp.ContactEmployees.Name != "" || listNuevoContacto.Count > 0) {
+                foreach (Contacto cnt in listNuevoContacto) {
+                    if (seActContacto)
+                        bp.ContactEmployees.Add();
+                    bp.ContactEmployees.Name            = cnt.Name;
+                    bp.ContactEmployees.FirstName       = cnt.FirstName;
+                    bp.ContactEmployees.Title           = cnt.Title;
+                    bp.ContactEmployees.MiddleName      = cnt.MiddleName;
+                    bp.ContactEmployees.Position        = cnt.Position;
+                    bp.ContactEmployees.LastName        = cnt.LastName;
+                    bp.ContactEmployees.Address         = cnt.Address;
+                    bp.ContactEmployees.Phone1          = cnt.Tel1;
+                    bp.ContactEmployees.MobilePhone     = cnt.Cellolar;
+                    bp.ContactEmployees.E_Mail          = cnt.E_MailL;
+
+                    if (!seActContacto)
+                        bp.ContactEmployees.Add();
                 }
             }
         }
@@ -203,6 +267,18 @@ namespace salesCVM.SAP
             }
             return index;
         }
+        private int IndiceContacto(List<Contacto> contacto, string Name, int CntctCode) {
+            int index = -1;
+            for (int c = 0; c < contacto.Count; c++) {
+                if (contacto[c].CntctCode != -1) {
+                    if (contacto[c].Name == Name && contacto[c].CntctCode == CntctCode) {
+                        index = c;
+                        break;
+                    }
+                }
+            }
+            return index;
+        }
         private List<Direcciones> NuevaDireccion(List<Direcciones> direccion) {
             List<Direcciones> nuevaDireccion = new List<Direcciones>();
             foreach (Direcciones dir in direccion) {
@@ -211,6 +287,15 @@ namespace salesCVM.SAP
                 }
             }
             return nuevaDireccion;
+        }
+        private List<Contacto> NuevoContacto(List<Contacto> contacto) {
+            List<Contacto> nuevoContacto = new List<Contacto>();
+            foreach (Contacto cnt in contacto) {
+                if (cnt.CntctCode == 0) {
+                    nuevoContacto.Add(cnt);
+                }
+            }
+            return nuevoContacto;
         }
         public bool CreateItem(ref MensajesObj msjCreate, Models.SAP modelo, ItemSAP item, string Usuario) {
             string msj = string.Empty;

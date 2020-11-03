@@ -32,13 +32,15 @@ namespace salesCVM.Models
     }
 
     public class Socios {
-        public string   Series { get; set; }
+        public string   Serie { get; set; }
         public string   CardCode { get; set; }
         public string   CardName { get; set; }
         public char     CardType { get; set; }
         public string   LicTradNum { get; set; }
         public string   Currency { get; set; }
         public string   E_Mail { get; set; }
+        public double   Balance { get; set; }
+        public string   IntrntSite { get; set; }
     }
     public class Direcciones {
         public int      LineNum { get; set; }
@@ -53,10 +55,25 @@ namespace salesCVM.Models
         public string   StreetNo { get; set; }
         public int      ZipCode { get; set; }
     }
+    public class Contacto
+    {
+        public int      CntctCode { get; set; }
+        public string   Name { get; set; }
+        public string   FirstName { get; set; }
+        public string   Title { get; set; }
+        public string   MiddleName { get; set; }
+        public string   Position { get; set; }
+        public string   LastName { get; set; }
+        public string   Address { get; set; }
+        public string   Tel1 { get; set; }
+        public string   Cellolar { get; set; }
+        public string   E_MailL { get; set; }
+    }
     public class BP
     {
         public Socios               Header { get; set; }
         public List<Direcciones>    TabDireccion { get; set; }
+        public List<Contacto>       TabContacto { get; set; }
     }
 
     public class ItemSAP
@@ -92,6 +109,9 @@ namespace salesCVM.Models
         public string       WhsName { get; set; }
         public char         Locked { get; set; }
         public double       OnHand { get; set; }
+        public double       IsCommited { get; set; }
+        public double       OnOrder { get; set; }
+        public double       Disponible { get; set; }
     }
     
     public class Monedas
@@ -130,4 +150,14 @@ namespace salesCVM.Models
         public int ItmsGrpCod { get; set; }
         public string ItmsGrpNam { get; set; }
     }
+
+    public class DocumentNumbering
+    {
+        public int      Series { get; set; }
+        public string   SeriesName { get; set; }
+        public int      NextNumber { get; set; }
+        public string   Code { get; set; }
+        public int      NumSize { get; set; }
+    }
+
 }

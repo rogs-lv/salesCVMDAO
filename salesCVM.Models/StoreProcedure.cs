@@ -115,6 +115,19 @@ namespace salesCVM.Models
                 return $"{command} \"IDS_GetEmpleados\" ";
             }
         }
+        public string SpDocumentsNumbering { 
+            get 
+            {
+                return $"{command} \"IDS_DocumentsNumbering\" ";
+            } 
+        }
+        public string SpExiste
+        {
+            get
+            {
+                return $"{command} \"IDS_Existe\" ";
+            }
+        }
         #endregion
 
         #region CRM

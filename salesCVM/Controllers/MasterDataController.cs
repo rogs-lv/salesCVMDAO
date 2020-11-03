@@ -6,6 +6,8 @@ using System.Web.Http;
 using salesCVM.Models;
 using salesCVM.DAO.DAO;
 using System.Web.Http.Cors;
+using System.Security.Permissions;
+using Microsoft.Ajax.Utilities;
 
 namespace salesCVM.Controllers
 {
@@ -31,13 +33,13 @@ namespace salesCVM.Controllers
                     if (priceList.Length > 0)
                         return Content(HttpStatusCode.BadRequest, "La lista de precios no es valido");
 
-                    if (DtsDao.GetDatosMaestros(ref ListBp, type, "", "" ))
+                    if (DtsDao.GetDatosMaestros(ref ListBp, type, "", ""))
                         return Content(HttpStatusCode.OK, ListBp);
                     else
                         return Content(HttpStatusCode.NoContent, "No se recuperarón socios de negocios");
                 case 4:
                     List<Item> ListItem = new List<Item>();
-                    if (DtsDao.GetDatosMaestros(ref ListItem, type, whsCode, priceList ))
+                    if (DtsDao.GetDatosMaestros(ref ListItem, type, whsCode, priceList))
                         return Content(HttpStatusCode.OK, ListItem);
                     else
                         return Content(HttpStatusCode.NoContent, "No se recuperarón artículos");
@@ -66,6 +68,12 @@ namespace salesCVM.Controllers
                         return Content(HttpStatusCode.OK, ListaDirecciones);
                     else
                         return Content(HttpStatusCode.OK, string.IsNullOrEmpty(msj) ? $"No se recuperaró información para: {cardcode}" : msj);
+                case 5:
+                    List<Contacto> ListaContactos = new List<Contacto>();
+                    if (DtsDao.GetInformacionSocios(ref ListaContactos, ref msj, type, cardcode))
+                        return Content(HttpStatusCode.OK, ListaContactos);
+                    else
+                        return Content(HttpStatusCode.OK, ListaContactos);
                 default:
                     return Content(HttpStatusCode.NotFound, "Opcion desconocida");
             }
@@ -102,11 +110,11 @@ namespace salesCVM.Controllers
                     return Content(HttpStatusCode.NotFound, "Opción desconocida");
             }
         }
-        
+
         [HttpPost]
         [Route("CreateItems")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public IHttpActionResult CreateItems([FromBody]ItemSAP documento, string usuario) {
+        public IHttpActionResult CreateItems([FromBody] ItemSAP documento, string usuario) {
             MensajesObj msj = new MensajesObj();
             if (string.IsNullOrEmpty(documento.Header.ItemCode))
                 return Content(HttpStatusCode.BadRequest, "Debe ingresar datos para el artículo");
@@ -116,7 +124,7 @@ namespace salesCVM.Controllers
             else
                 return Content(HttpStatusCode.BadRequest, msj.Mensaje);
         }
-        
+
         [HttpPatch]
         [Route("UpdateItem")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
@@ -152,12 +160,22 @@ namespace salesCVM.Controllers
             MensajesObj msj = new MensajesObj();
             if (string.IsNullOrEmpty(document.Header.CardCode))
                 return Content(HttpStatusCode.BadRequest, "Debe ingresar datos para el socio de negocios");
-
-            if (DtsDao.CrearSocioSAP(ref msj, document, usuario))
-                return Content(HttpStatusCode.OK, msj.Code);
-            else
-                return Content(HttpStatusCode.BadRequest, msj.Mensaje);
-
+            
+            bool existe = false;
+            if (DtsDao.Existe(ref existe, document.Header.LicTradNum, "1"))
+            {
+                if (!existe) //No existe RFC
+                {
+                    if (DtsDao.CrearSocioSAP(ref msj, document, usuario))
+                        return Content(HttpStatusCode.OK, msj.Code);
+                    else
+                        return Content(HttpStatusCode.BadRequest, msj.Mensaje);
+                }
+                else { //Existe RFC
+                    return Content(HttpStatusCode.BadRequest, $"El RFC {document.Header.LicTradNum} ya existe");
+                }
+            } else
+                return Content(HttpStatusCode.BadRequest, "Se generó un error al verificar que el dato exista");
         }
 
         [HttpPatch]
@@ -222,6 +240,29 @@ namespace salesCVM.Controllers
                 return Content(HttpStatusCode.OK, ListVendedor);
             else
                 return Content(HttpStatusCode.NotFound, string.IsNullOrEmpty(msj) ? "No se recuperaron vendedores" : msj);
+        }
+
+        [HttpGet]
+        [Route("GetDocumentNumbering")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public IHttpActionResult GetDocumentNumbering(string type, string subtype) {
+            string msj = string.Empty;
+            DocumentNumbering docNumb = new DocumentNumbering();
+            if (DtsDao.GetDocumentsNumbering(ref docNumb, ref msj, type, subtype))
+                return Content(HttpStatusCode.OK, docNumb);
+            else
+                return Content(HttpStatusCode.BadRequest, string.IsNullOrEmpty(msj) ? "Error al recuperar la serie del documento" : msj);
+        }
+
+        [HttpGet]
+        [Route("GetExiste")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public IHttpActionResult GetExiste(string type, string value) {
+            bool existe = false;
+            if(DtsDao.Existe(ref existe, value, type))
+                return Content(HttpStatusCode.OK, existe);
+            else
+                return Content(HttpStatusCode.BadRequest, "Se generó un error al verificar que el dato exista");
         }
     }
 }

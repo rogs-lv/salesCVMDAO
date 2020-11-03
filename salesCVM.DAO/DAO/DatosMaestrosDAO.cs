@@ -341,5 +341,54 @@ namespace salesCVM.DAO.DAO
                 }
             }
         }
+        public bool GetDocumentsNumbering(ref DocumentNumbering documentNum, ref string msj, string type, string subtype) {
+            IDbConnection connection = DBAdapter.GetConnection();
+            try
+            {
+                if (connection.State == ConnectionState.Closed)
+                    throw new Exception("Connection not available or closed");
+
+                documentNum = connection.Query<DocumentNumbering>($"{SpDocumentsNumbering}  {type}, {subtype}").SingleOrDefault();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Lg.Registrar(ex, this.GetType().FullName);
+                msj = ex.Message;
+                return false;
+            }
+            finally
+            {
+                if (connection != null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+        }
+        public bool Existe(ref bool resp, string value, string type) {
+            IDbConnection connection = DBAdapter.GetConnection();
+            try
+            {
+                if (connection.State == ConnectionState.Closed)
+                    throw new Exception("Connection not available or closed");
+
+                resp = connection.Query<bool>($"{SpExiste} {type}, {value}").Single();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Lg.Registrar(ex, this.GetType().FullName);
+                return false;
+            }
+            finally
+            {
+                if (connection != null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+        }
     }
 }
