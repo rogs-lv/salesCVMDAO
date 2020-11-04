@@ -41,6 +41,8 @@ namespace salesCVM.Models
         public string   E_Mail { get; set; }
         public double   Balance { get; set; }
         public string   IntrntSite { get; set; }
+        public string   FormaPago { get; set; }
+        public string   MetodoPago { get; set; }
     }
     public class Direcciones {
         public int      LineNum { get; set; }
@@ -53,7 +55,7 @@ namespace salesCVM.Models
         public string   Block { get; set; }
         public string   Street { get; set; }
         public string   StreetNo { get; set; }
-        public int      ZipCode { get; set; }
+        public string      ZipCode { get; set; }
     }
     public class Contacto
     {
@@ -96,6 +98,7 @@ namespace salesCVM.Models
         public bool         VATLiable { get; set; }
         public bool         validFor { get; set; }
         public string       CodeBars { get; set; }
+        public string       PicturName { get; set; }
     }
     public class Propiedad
     {
@@ -160,4 +163,14 @@ namespace salesCVM.Models
         public int      NumSize { get; set; }
     }
 
+    public class FormaPago
+    {
+        public string IdFormaPago { get; set; }
+        public string DescFormaPago { get; set; }
+    }
+
+    public class MetodoPago {
+        public string IdMetodoPago { get; set; }
+        public string DescMetodoPago { get; set; }
+    }
 }

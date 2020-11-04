@@ -12,17 +12,20 @@ namespace salesCVM.Models
     }
 
     public class Document {
-        public int DocEntry { get; set; }
-        public int DocNum { get; set; }
-        public string CardCode { get; set; }
-        public string CardName { get; set; }
+        public int      DocEntry { get; set; }
+        public int      DocNum { get; set; }
+        public string   CardCode { get; set; }
+        public string   CardName { get; set; }
         public DateTime DocDate { get; set; }
-        public string Reference { get; set; }
-        public string Comments { get; set; }
-        public char Status { get; set; }
-        public int DocEntrySAP { get; set; }
-        public int DocNumSAP { get; set; }
-        public int SlpCode { get; set; }
+        public DateTime TaxDate { get; set; }
+        public string   Reference { get; set; }
+        public string   Comments { get; set; }
+        public char     Status { get; set; }
+        public int      DocEntrySAP { get; set; }
+        public int      DocNumSAP { get; set; }
+        public int      SlpCode { get; set; }
+        public string   ShipToCode { get; set; }
+        public int      CntctCode { get; set; }
     }
 
     public class DocumentLines {
@@ -38,5 +41,14 @@ namespace salesCVM.Models
         public string TaxCode { get; set; }
         public double Rate { get; set; }
         public string WhsCode { get; set; }
+    }
+
+    public class ContactPerson {
+        public int      CntctCode { get; set; }
+        public string   Name { get; set; }
+    }
+    public class DireccionEntrega {
+        public string Address { get; set; }
+        public string Direccion { get; set; }
     }
 }

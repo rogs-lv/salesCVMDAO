@@ -32,14 +32,17 @@ namespace salesCVM.SAP
 
                     oDoc.CardCode           = document.Header.CardCode;
                     oDoc.CardName           = document.Header.CardName;
-                    oDoc.DocDate            = DateTime.Now;
-                    oDoc.TaxDate            = DateTime.Now;
-                    if (type == 17)
-                        oDoc.DocDueDate     = document.Header.DocDate;
+                    oDoc.DocDate            = DateTime.Now; // Fecha de contabilización
+                    oDoc.TaxDate            = document.Header.TaxDate; //DateTime.Now; // Fecha del documento
+                    if (type == 17) {
+                        oDoc.DocDueDate     = document.Header.DocDate; // Fecha de entrega
+                        oDoc.ShipToCode     = document.Header.ShipToCode;
+                    }
                     oDoc.NumAtCard          = document.Header.Reference;
                     oDoc.Comments           = document.Header.Comments;
                     oDoc.DocCurrency        = document.Detail[0].Currency;
                     oDoc.SalesPersonCode    = document.Header.SlpCode;
+                    oDoc.ContactPersonCode  = document.Header.CntctCode;
 
                     AddUserFieldHeader(oDoc, Usuario);
 

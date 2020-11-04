@@ -10,6 +10,9 @@ using System.Data;
 using salesCVM.DAO.Util;
 using salesCVM.SAP.Interface;
 using salesCVM.SAP;
+using System.IO;
+using System.Net.Http;
+using System.Net;
 
 namespace salesCVM.DAO.DAO
 {
@@ -272,6 +275,43 @@ namespace salesCVM.DAO.DAO
                 }
             }
         }
+        public bool GetContactos(ref List<ContactPerson> cnts, ref List<DireccionEntrega> direccion, ref string msj, int accion, string cardcode) {
+            IDbConnection connection = DBAdapter.GetConnection();
+            SqlMapper.GridReader mult;
+            try
+            {
+                if (connection.State == ConnectionState.Closed)
+                    throw new Exception("Connection not available or closed");
+
+                mult = connection.QueryMultiple($"{SpGetOpciones} {accion}, {cardcode}");
+
+                if (mult != null)
+                {
+                    cnts = mult.Read<ContactPerson>().ToList();
+                    direccion = mult.Read<DireccionEntrega>().ToList();
+                    return true;
+                }
+                else
+                {
+                    msj = $"No se recuperarón personas de contacto o direcciones de entrega";
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Lg.Registrar(ex, this.GetType().FullName);
+                msj = ex.Message;
+                return false;
+            }
+            finally
+            {
+                if (connection != null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+        }
         public bool CrearArticuloSAP(ref MensajesObj msjCreate, ItemSAP document, string usuario) {
             IDbConnection connection = DBAdapter.GetConnection();
             try
@@ -379,6 +419,79 @@ namespace salesCVM.DAO.DAO
             catch (Exception ex)
             {
                 Lg.Registrar(ex, this.GetType().FullName);
+                return false;
+            }
+            finally
+            {
+                if (connection != null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+        }
+        public bool GetImageFromFolder(string PictureName, ref string resp) {
+            IDbConnection connection = DBAdapter.GetConnection();
+            try
+            {
+                string path = connection.Query<string>($"SELECT BitmapPath FROM OADP WHERE \"PrintId\" = 'SBOD' AND \"ObjList\" = '1470000113'").FirstOrDefault();
+                string picturePath = Path.Combine(path, PictureName);
+                byte[] b = System.IO.File.ReadAllBytes(picturePath);
+                resp = "data:image/png;base64," + Convert.ToBase64String(b);
+                //string picturePath = Path.Combine(path,PictureName);
+                //FileStream fileStream = new FileStream(picturePath, FileMode.Open, FileAccess.Read);
+                //buffer = new byte[16 * 1024];
+                //using (MemoryStream ms = new MemoryStream())
+                //{
+                //    int read;
+                //    while ((read = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+                //    {
+                //        ms.Write(buffer, 0, read);
+                //    }
+                //    ms.ToArray();
+                //}
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Lg.Registrar(ex, this.GetType().FullName);
+                return false;
+            }
+            finally
+            {
+                if (connection != null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+        }
+        public bool GetPagos(ref List<FormaPago> FrmsPago, ref List<MetodoPago> MtdsPago, ref string msj, int accion, string cardcode) {
+            IDbConnection connection = DBAdapter.GetConnection();
+            SqlMapper.GridReader mult;
+            try
+            {
+                if (connection.State == ConnectionState.Closed)
+                    throw new Exception("Connection not available or closed");
+
+                mult = connection.QueryMultiple($"{SpGetOpciones} {accion}, {cardcode}");
+
+                if (mult != null)
+                {
+                    FrmsPago = mult.Read<FormaPago>().ToList();
+                    MtdsPago = mult.Read<MetodoPago>().ToList();
+                    return true;
+                }
+                else
+                {
+                    msj = $"No se recuperarón formas de pago";
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Lg.Registrar(ex, this.GetType().FullName);
+                msj = ex.Message;
                 return false;
             }
             finally

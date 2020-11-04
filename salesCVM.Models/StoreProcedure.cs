@@ -155,6 +155,13 @@ namespace salesCVM.Models
                 return $"{command} \"IDS_CuotasVentas\" ";
             }
         }
+        public string SpGetCotDashboard
+        {
+            get
+            {
+                return $"{command} \"IDS_GetCotDashboard\" ";
+            }
+        }
         #endregion
     }
 }

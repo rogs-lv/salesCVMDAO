@@ -8,6 +8,7 @@ using salesCVM.DAO.DAO;
 using System.Web.Http.Cors;
 using System.Security.Permissions;
 using Microsoft.Ajax.Utilities;
+using System.IO;
 
 namespace salesCVM.Controllers
 {
@@ -264,5 +265,45 @@ namespace salesCVM.Controllers
             else
                 return Content(HttpStatusCode.BadRequest, "Se generó un error al verificar que el dato exista");
         }
+
+        [HttpGet]
+        [Route("GetPersonaContacto")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public IHttpActionResult GetPersonaContacto(string cardcode, int type)
+        {
+            List<ContactPerson> ListContactos = new List<ContactPerson>();
+            List<DireccionEntrega> ListDirEntrega = new List<DireccionEntrega>();
+            string msj = string.Empty;
+            if (DtsDao.GetContactos(ref ListContactos, ref ListDirEntrega, ref msj, type, cardcode))
+                return Content(HttpStatusCode.OK, new { contactos = ListContactos , direcciones = ListDirEntrega});
+            else
+                return Content(HttpStatusCode.NotFound, string.IsNullOrEmpty(msj) ? "No se recuperaron contactos" : msj);
+        }
+        [HttpGet]
+        [Route("GetImage")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public IHttpActionResult GetImage(string PictureName) {
+            if(string.IsNullOrEmpty(PictureName))
+                return Content(HttpStatusCode.OK, "");
+
+            string image64 = "";
+            if (DtsDao.GetImageFromFolder(PictureName, ref image64))
+                return Content(HttpStatusCode.OK, image64);
+            else
+                return Content(HttpStatusCode.OK, "");
+        }
+        [HttpGet]
+        [Route("GetPagos")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public IHttpActionResult GetPagos(int accion, string cardcode) {
+            List<FormaPago> ListFPagos = new List<FormaPago>();
+            List<MetodoPago> ListMPagos = new List<MetodoPago>();
+            string msj = string.Empty;
+            if (DtsDao.GetPagos(ref ListFPagos, ref ListMPagos, ref msj, accion, cardcode))
+                return Content(HttpStatusCode.OK, new { FormaPago = ListFPagos, MetodoPago = ListMPagos });
+            else
+                return Content(HttpStatusCode.NotFound, string.IsNullOrEmpty(msj) ? "No se recuperaron pagos" : msj);
+        }
+
     }
 }

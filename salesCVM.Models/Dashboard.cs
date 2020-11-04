@@ -20,8 +20,15 @@ namespace salesCVM.Models
         public decimal U_Cuota { get; set; }
         public decimal Ventas { get; set; }
     }
-    public class GraficaY
-    {
-
+    public class Cotizaciones {
+        public int DocEntry { get; set; }
+        public int DocNum { get; set; }
+        public string CardCode { get; set; }
+        public string CardName { get; set; }
+        public DateTime DocDate { get; set; }
+        public DateTime DocDueDate { get; set; }
+        public DateTime TaxDate { get; set; }
+        public string Reference { get; set; }
+        public string Comments { get; set; }
     }
 }

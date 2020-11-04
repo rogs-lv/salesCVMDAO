@@ -64,5 +64,22 @@ namespace salesCVM.Controllers
             else
                 return Content(HttpStatusCode.NotFound, new { codigo = -1, mensaje = msj});
         }
+        [HttpGet]
+        [Route("GetCotizaciones")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public IHttpActionResult GetCotizaciones(string usuario)
+        {
+            if (string.IsNullOrEmpty(usuario))
+                return Content(HttpStatusCode.BadRequest, "El usuario es requerido");
+
+            List<Cotizaciones> DtsCot = new List<Cotizaciones>();
+            string msj = string.Empty;
+
+            if (dashDAO.GetCotizaciones(ref DtsCot, ref msj, usuario))
+                return Content(HttpStatusCode.OK, new { codigo = 0, mensaje = DtsCot });
+            else
+                return Content(HttpStatusCode.NotFound, new { codigo = -1, mensaje = msj });
+
+        }
     }
 }
