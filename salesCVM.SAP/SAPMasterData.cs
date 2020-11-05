@@ -33,14 +33,14 @@ namespace salesCVM.SAP
 
                     if (int.Parse(socio.Header.Serie) > 0)
                         bp.Series           = int.Parse(socio.Header.Serie);
-                    bp.CardCode         = socio.Header.CardCode;
+                    // bp.CardCode         = socio.Header.CardCode;
                     bp.CardName         = socio.Header.CardName;
                     bp.FederalTaxID     = socio.Header.LicTradNum;
                     bp.CardType         = CardTypes(socio.Header.CardType);
                     bp.EmailAddress     = socio.Header.E_Mail;
                     bp.Website          = socio.Header.IntrntSite;
 
-                    //AddUserFieldHeader(bp, usuario)
+                    AddUserFieldHeader(bp, socio, "");
 
                     foreach (Direcciones dir in socio.TabDireccion)
                     {
@@ -124,6 +124,8 @@ namespace salesCVM.SAP
                     bp.CardType     = CardTypes(socio.Header.CardType);
                     bp.EmailAddress = socio.Header.E_Mail;
                     bp.Website      = socio.Header.IntrntSite;
+
+                    AddUserFieldHeader(bp, socio, "");
 
                     //Si existen direcciones las actualizamos
                     int countAdress         = bp.Addresses.Count;
@@ -497,12 +499,14 @@ namespace salesCVM.SAP
                     return BoAddressType.bo_ShipTo;
             }
         }
-        private void AddUserFieldHeader(BusinessPartners doc, string Usuario)
+        private void AddUserFieldHeader(BusinessPartners bp, BP _bp, string Usuario)
         {
-            doc.UserFields.Fields.Item("U_Origen").Value = "P";
-            doc.UserFields.Fields.Item("U_cvmsSucursal").Value = "Matriz";
-            doc.UserFields.Fields.Item("U_cvmsUser").Value = Usuario;
-            doc.UserFields.Fields.Item("U_cvmsHora").Value = DateTime.Now.ToString("HH:mm:ss"); ;
+            bp.UserFields.Fields.Item("U_FormaPago").Value  = _bp.Header.FormaPago == null ? "" : _bp.Header.FormaPago;
+            bp.UserFields.Fields.Item("U_MetodoPago").Value = _bp.Header.MetodoPago == null ? "" : _bp.Header.MetodoPago;
+            //doc.UserFields.Fields.Item("U_Origen").Value = "P";
+            //doc.UserFields.Fields.Item("U_cvmsSucursal").Value = "Matriz";
+            //doc.UserFields.Fields.Item("U_cvmsUser").Value = Usuario;
+            //doc.UserFields.Fields.Item("U_cvmsHora").Value = DateTime.Now.ToString("HH:mm:ss");
         }
     }
 }

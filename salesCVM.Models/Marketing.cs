@@ -26,6 +26,8 @@ namespace salesCVM.Models
         public int      SlpCode { get; set; }
         public string   ShipToCode { get; set; }
         public int      CntctCode { get; set; }
+        public string   TaxCode { get; set; }
+        public double   Rate { get; set; }
     }
 
     public class DocumentLines {

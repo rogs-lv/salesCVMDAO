@@ -43,6 +43,8 @@ namespace salesCVM.Models
         public string   IntrntSite { get; set; }
         public string   FormaPago { get; set; }
         public string   MetodoPago { get; set; }
+        public string   TaxCode { get; set; }
+        public double   Rate { get; set; }
     }
     public class Direcciones {
         public int      LineNum { get; set; }

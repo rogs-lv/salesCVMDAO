@@ -33,9 +33,9 @@ namespace salesCVM.SAP
                     oDoc.CardCode           = document.Header.CardCode;
                     oDoc.CardName           = document.Header.CardName;
                     oDoc.DocDate            = DateTime.Now; // Fecha de contabilización
-                    oDoc.TaxDate            = document.Header.TaxDate; //DateTime.Now; // Fecha del documento
+                    oDoc.TaxDate            = document.Header.TaxDate; // Fecha del documento
+                    oDoc.DocDueDate         = document.Header.DocDate; // Fecha de entrega
                     if (type == 17) {
-                        oDoc.DocDueDate     = document.Header.DocDate; // Fecha de entrega
                         oDoc.ShipToCode     = document.Header.ShipToCode;
                     }
                     oDoc.NumAtCard          = document.Header.Reference;
