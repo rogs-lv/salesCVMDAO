@@ -187,7 +187,7 @@ namespace salesCVM.DAO.DAO
         /// <param name="listDocuments"></param>
         /// <param name="docEntry"></param>
         /// <returns>return true or false to process completed</returns>
-        public bool GetDocumentsSAP<T>(ref Mensajes msjConsulta , ref DocSAP document, ref List<T> listDocuments, int docEntry = 0) {
+        public bool GetDocumentsSAP<T>(ref Mensajes msjConsulta , ref DocSAP document, ref List<T> listDocuments, int docEntry = 0, string cardcode = "", string usuario = "") {
             IDbConnection connection = dBAdapter.GetConnection();
             try
             {
@@ -207,7 +207,7 @@ namespace salesCVM.DAO.DAO
                         return false;
                     }
                 } else { //Lista de documentos abiertos
-                    listDocuments = connection.Query<T>($"{ SpDocumentSAP}").ToList();
+                    listDocuments = connection.Query<T>($"{ SpDocumentSAP} 0,'{cardcode}','{usuario}'").ToList();
                     if (listDocuments.Count > 0)
                         return true;
                     else {

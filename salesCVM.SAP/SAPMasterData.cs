@@ -32,8 +32,9 @@ namespace salesCVM.SAP
                     BusinessPartners bp = (BusinessPartners)_oCompany.GetBusinessObject(BoObjectTypes.oBusinessPartners);
 
                     if (int.Parse(socio.Header.Serie) > 0)
-                        bp.Series           = int.Parse(socio.Header.Serie);
-                    // bp.CardCode         = socio.Header.CardCode;
+                        bp.Series       = int.Parse(socio.Header.Serie);
+                    else
+                        bp.CardCode     = socio.Header.CardCode;
                     bp.CardName         = socio.Header.CardName;
                     bp.FederalTaxID     = socio.Header.LicTradNum;
                     bp.CardType         = CardTypes(socio.Header.CardType);
@@ -54,7 +55,9 @@ namespace salesCVM.SAP
                         bp.Addresses.Street             = dir.Street;
                         bp.Addresses.StreetNo           = dir.StreetNo;
                         bp.Addresses.Block              = dir.Block;
-                        bp.Addresses.ZipCode            = dir.ZipCode.ToString();
+                        bp.Addresses.ZipCode            = dir.ZipCode == null ? "" : dir.ZipCode.ToString();
+                        if (dir.AdresType == 'S')
+                            bp.Addresses.TaxCode = dir.TaxCode;
                         bp.Addresses.Add();
                         //} else { // Embarque
                         //}
@@ -144,7 +147,9 @@ namespace salesCVM.SAP
                                 bp.Addresses.Street         = socio.TabDireccion[indice].Street;
                                 bp.Addresses.StreetNo       = socio.TabDireccion[indice].StreetNo;
                                 bp.Addresses.Block          = socio.TabDireccion[indice].Block;
-                                bp.Addresses.ZipCode        = socio.TabDireccion[indice].ZipCode.ToString();
+                                bp.Addresses.ZipCode        = socio.TabDireccion[indice].ZipCode == null ? "" : socio.TabDireccion[indice].ZipCode.ToString();
+                                if (bp.Addresses.AddressType == BoAddressType.bo_ShipTo)
+                                    bp.Addresses.TaxCode    = socio.TabDireccion[indice].TaxCode;
                             }
                             seActRegistros = true;
                         }
@@ -501,8 +506,10 @@ namespace salesCVM.SAP
         }
         private void AddUserFieldHeader(BusinessPartners bp, BP _bp, string Usuario)
         {
-            bp.UserFields.Fields.Item("U_FormaPago").Value  = _bp.Header.FormaPago == null ? "" : _bp.Header.FormaPago;
-            bp.UserFields.Fields.Item("U_MetodoPago").Value = _bp.Header.MetodoPago == null ? "" : _bp.Header.MetodoPago;
+            if(_bp.Header.FormaPago != null)
+                bp.UserFields.Fields.Item("U_FormaPago").Value  = _bp.Header.FormaPago;
+            if(_bp.Header.MetodoPago != null)
+                bp.UserFields.Fields.Item("U_MetodoPago").Value = _bp.Header.MetodoPago;
             //doc.UserFields.Fields.Item("U_Origen").Value = "P";
             //doc.UserFields.Fields.Item("U_cvmsSucursal").Value = "Matriz";
             //doc.UserFields.Fields.Item("U_cvmsUser").Value = Usuario;

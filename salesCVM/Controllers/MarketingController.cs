@@ -6,6 +6,7 @@ using System.Web.Http;
 using salesCVM.Models;
 using salesCVM.DAO.DAO;
 using System.Web.Http.Cors;
+using System.Security.Policy;
 
 namespace salesCVM.Controllers
 {
@@ -79,12 +80,12 @@ namespace salesCVM.Controllers
         [HttpGet]
         [Route("GetDocumentSAP")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public IHttpActionResult GetDocumentSAP(int docEntry = 0) {
+        public IHttpActionResult GetDocumentSAP(int docEntry = 0, string cardcode = "", string usuario = "") {
             Mensajes msj = new Mensajes();
             DocSAP doc = new DocSAP();
             List<Document> listDoc = new List<Document>();
 
-            if (MktDao.GetDocumentsSAP(ref msj, ref doc, ref listDoc, docEntry))
+            if (MktDao.GetDocumentsSAP(ref msj, ref doc, ref listDoc, docEntry, cardcode, usuario))
             {
                 if (docEntry > 0)
                     return Content(HttpStatusCode.OK, doc);

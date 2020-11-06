@@ -57,7 +57,8 @@ namespace salesCVM.Models
         public string   Block { get; set; }
         public string   Street { get; set; }
         public string   StreetNo { get; set; }
-        public string      ZipCode { get; set; }
+        public string   ZipCode { get; set; }
+        public string   TaxCode { get; set; }
     }
     public class Contacto
     {
@@ -170,9 +171,14 @@ namespace salesCVM.Models
         public string IdFormaPago { get; set; }
         public string DescFormaPago { get; set; }
     }
-
     public class MetodoPago {
         public string IdMetodoPago { get; set; }
         public string DescMetodoPago { get; set; }
+    }
+
+    public class Impuestos
+    {
+        public string Code { get; set; }
+        public string Name { get; set; }
     }
 }

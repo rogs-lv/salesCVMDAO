@@ -146,9 +146,10 @@ namespace salesCVM.Controllers
         public IHttpActionResult GetDestinos() {
             List<Country> ListPaises = new List<Country>();
             List<State> ListEstados = new List<State>();
+            List<Impuestos> ListImpuesto = new List<Impuestos>();
             string msj = string.Empty;
-            if (DtsDao.GetDestinos(ref ListPaises, ref ListEstados, ref msj))
-                return Content(HttpStatusCode.OK, new { country = ListPaises, state = ListEstados });
+            if (DtsDao.GetDestinos(ref ListPaises, ref ListEstados, ref ListImpuesto, ref msj))
+                return Content(HttpStatusCode.OK, new { country = ListPaises, state = ListEstados, impuestos = ListImpuesto });
             else
                 return Content(HttpStatusCode.OK, msj);
         }

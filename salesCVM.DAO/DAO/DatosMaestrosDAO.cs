@@ -132,7 +132,7 @@ namespace salesCVM.DAO.DAO
                 }
             }
         }
-        public bool GetDestinos(ref List<Country> ListPaises, ref List<State> ListEstados, ref string msj) {
+        public bool GetDestinos(ref List<Country> ListPaises, ref List<State> ListEstados, ref List<Impuestos> ListImpuestos, ref string msj) {
             IDbConnection connection = DBAdapter.GetConnection();
             SqlMapper.GridReader mult;
             try
@@ -146,6 +146,7 @@ namespace salesCVM.DAO.DAO
                 {
                     ListPaises = mult.Read<Country>().ToList();
                     ListEstados = mult.Read<State>().ToList();
+                    ListImpuestos = mult.Read<Impuestos>().ToList();
                     return true;
                 }
                 else
