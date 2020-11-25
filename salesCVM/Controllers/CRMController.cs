@@ -54,11 +54,39 @@ namespace salesCVM.Controllers
             else
                 return Content(HttpStatusCode.BadRequest, "Error al obtener socios de negocios");
         }
-        
+
+        [HttpGet]
+        [Route("GetListaOpps")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public IHttpActionResult GetListaOpps() {
+            List<Opportunity> ListOpps = new List<Opportunity>();
+            if(crmDAO.GetListOpportunity(ref ListOpps))
+                return Content(HttpStatusCode.OK, ListOpps);
+            else
+                return Content(HttpStatusCode.BadRequest, "Error al obtener socios de negocios");
+        }
+
+        [HttpGet]
+        [Route("GetTabsDocumentOpp")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public IHttpActionResult GetTabsDocumentOpp(int type, int docnum)
+        {
+            if (type != 97)
+                return Content(HttpStatusCode.BadRequest, "Error al obtener el tipo de documento");
+            if (docnum <= 0)
+                return Content(HttpStatusCode.BadRequest, "Especifique un número de documento valido");
+            
+            object tabs = new object();
+            if (crmDAO.GetTabsDocumentOpp(ref tabs, type, docnum))
+                return Content(HttpStatusCode.OK, tabs);
+            else
+                return Content(HttpStatusCode.BadRequest, $"Error al obtener datos para el documento {docnum}");
+        }
+
         [HttpGet]
         [Route("GetOptions")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public IHttpActionResult GetOptions(int type, string cardcode = "") {
+        public IHttpActionResult GetOptions(int type, string cardcode = "", int idOpp = 0) {
             switch (type)
             {
                 case 1: //Options to header document opportunity
@@ -69,7 +97,7 @@ namespace salesCVM.Controllers
                         return Content(HttpStatusCode.InternalServerError, "Error al cargar datos para el documento");
                 case 2: //Options to detail document opportunity
                     OptionsTabsDetail optionsDetail = new OptionsTabsDetail();
-                    if (crmDAO.GetOptionsTabsGeneral(ref optionsDetail))
+                    if (crmDAO.GetOptionsTabsGeneral(ref optionsDetail, idOpp))
                         return Content(HttpStatusCode.OK, optionsDetail);
                     else
                         return Content(HttpStatusCode.InternalServerError, "Error al cargar datos para el detalle del documento");
@@ -85,9 +113,26 @@ namespace salesCVM.Controllers
                         return Content(HttpStatusCode.OK, optionTabsActivity);
                     else
                         return Content(HttpStatusCode.InternalServerError, "Error al cargar datos para el detalle de la actividad");
-
                 default:
                     return Content(HttpStatusCode.BadRequest, "Opción desconocida");
+            }
+        }
+        
+        [HttpGet]
+        [Route("GetSelects")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public IHttpActionResult GetSelects(int accion, int type)
+        {
+            switch (accion)
+            {
+                case 1: // Options to documents
+                    List<OpenDocs> listOpendDocs = new List<OpenDocs>();
+                    if (crmDAO.GetOpenDocuments(ref listOpendDocs, type))
+                        return Content(HttpStatusCode.OK, listOpendDocs);
+                    else
+                        return Content(HttpStatusCode.OK, listOpendDocs);
+                default:
+                    return Content(HttpStatusCode.BadRequest, "Opción desconocida para información de selects");
             }
         }
 

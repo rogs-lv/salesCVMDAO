@@ -167,13 +167,20 @@ namespace salesCVM.SAP
                     oOpp.CardCode                = _opp.Header.CardCode;
                     oOpp.Territory               = _opp.Header.Territory;
                     oOpp.StartDate               = _opp.Header.OpenDate;
-                    // Opp.ClosingType = SetDiftType(_opp.Detail.TabPotencial.);
+                    if (_opp.Header.CloseDate != null)
+                        oOpp.ClosingDate         = _opp.Header.CloseDate;
                     oOpp.PredictedClosingDate    = _opp.Detail.TabPotencial.PredDate;
-                    oOpp.ProjectCode             = _opp.Detail.TabGeneral.PrjCode.ToString();
-                    oOpp.Source                  = _opp.Detail.TabGeneral.Source;
-                    oOpp.Industry                = _opp.Detail.TabGeneral.Industry;
-                    oOpp.Remarks                 = _opp.Detail.TabGeneral.Memo;
+                    if (_opp.Detail.TabGeneral.PrjCode != "")
+                        oOpp.ProjectCode             = _opp.Detail.TabGeneral.PrjCode;
+                    if (_opp.Detail.TabGeneral.Source > 0)
+                        oOpp.Source                  = _opp.Detail.TabGeneral.Source;
+                    if (_opp.Detail.TabGeneral.Industry > 0)
+                        oOpp.Industry                = _opp.Detail.TabGeneral.Industry;
+                    if (_opp.Detail.TabGeneral.Memo != "")
+                        oOpp.Remarks                 = _opp.Detail.TabGeneral.Memo;
                     oOpp.SalesPerson             = _opp.Header.SlpCode;
+                    oOpp.TotalAmountLocal        = _opp.Detail.TabPotencial.MaxSumLoc;
+
                     if (_opp.Header.CprCode > 0)
                         oOpp.ContactPerson       = _opp.Header.CprCode;
 
@@ -231,20 +238,41 @@ namespace salesCVM.SAP
 
                     if (oOpp.GetByKey(_opp.Header.OpprId))
                     {
-                        oOpp.ProjectCode = _opp.Detail.TabGeneral.PrjCode.ToString();
-                        oOpp.Source = _opp.Detail.TabGeneral.Source;
-                        oOpp.Industry = _opp.Detail.TabGeneral.Industry;
-                        oOpp.Remarks = _opp.Detail.TabGeneral.Memo;
-                        oOpp.SalesPerson = _opp.Header.SlpCode;
-                        oOpp.Territory = _opp.Header.Territory;
-                        if (_opp.Header.CprCode > 0)
-                            oOpp.ContactPerson = _opp.Header.CprCode;
+                        oOpp.OpportunityName        = _opp.Header.Name;
+                        oOpp.Territory              = _opp.Header.Territory;
+                        oOpp.StartDate              = _opp.Header.OpenDate;
+                        if (_opp.Header.CloseDate != null)
+                            oOpp.ClosingDate        = _opp.Header.CloseDate;
+                        oOpp.PredictedClosingDate   = _opp.Detail.TabPotencial.PredDate;
+                        if (_opp.Detail.TabGeneral.PrjCode != "")
+                            oOpp.ProjectCode        = _opp.Detail.TabGeneral.PrjCode;
+                        if (_opp.Detail.TabGeneral.Source > 0)
+                            oOpp.Source             = _opp.Detail.TabGeneral.Source;
+                        if (_opp.Detail.TabGeneral.Industry > 0)
+                            oOpp.Industry           = _opp.Detail.TabGeneral.Industry;
+                        if (_opp.Detail.TabGeneral.Memo != "")
+                            oOpp.Remarks            = _opp.Detail.TabGeneral.Memo;
+                        oOpp.SalesPerson            = _opp.Header.SlpCode;
+                        oOpp.TotalAmountLocal       = _opp.Detail.TabPotencial.MaxSumLoc;
 
-                        AddStatus(oOpp, _opp);
-                        UpdStage(oOpp, _opp.Detail.TableEtapas);
-                        UpdPartner(oOpp, _opp.Detail.TablePartner);
-                        UpdCompet(oOpp, _opp.Detail.TableCompet);
+                        if (_opp.Header.CprCode > 0)
+                            oOpp.ContactPerson      = _opp.Header.CprCode;
+
+                        bool seActEtapas = false;
+                        UpdStage(ref seActEtapas, oOpp, _opp.Detail.TableEtapas);
+                        bool seActPartner = false;
+                        UpdPartner(ref seActPartner, oOpp, _opp.Detail.TablePartner);
+                        bool seActCompet = false;
+                        UpdCompet(ref seActCompet, oOpp, _opp.Detail.TableCompet);
+
                         // AddUserFieldHeader(oOpp, "");
+
+                        // si hay que agregar nuevo registros
+                        UpdNewStage(oOpp, _opp.Detail.TableEtapas, seActEtapas);
+                        UpdNewPartner(oOpp, _opp.Detail.TablePartner, seActPartner);
+                        UpdNewCompet(oOpp, _opp.Detail.TableCompet, seActCompet);
+
+                        UpdStatus(oOpp, _opp);
 
                         if (oOpp.Update() != 0)
                         {
@@ -318,22 +346,40 @@ namespace salesCVM.SAP
         {
         }
         private void AddStatus(SalesOpportunities docSap, OpportunitySAP doc) {
-            switch (doc.Detail.TabResumen.Status)
+            switch (doc.Header.Status)
             {
-                case 'O':
+                case "O":
                     docSap.Status = BoSoOsStatus.sos_Open;
                     break;
-                case 'M':
+                case "M":
                     docSap.Status = BoSoOsStatus.sos_Missed;
-                    docSap.Reasons.Reason = doc.Detail.TabResumen.ReasondId;
-                    docSap.Add();
+                    docSap.Reasons.Reason = doc.Header.ReasondId;
+                    docSap.Reasons.Add();
                     break;
-                case 'W':
+                case "W":
                     docSap.Status = BoSoOsStatus.sos_Sold;
-                    docSap.Reasons.Reason = doc.Detail.TabResumen.ReasondId;
-                    docSap.Add();
+                    docSap.Reasons.Reason = doc.Header.ReasondId;
+                    docSap.Reasons.Add();
                     break;
 
+            }
+        }
+        private void UpdStatus(SalesOpportunities docSap, OpportunitySAP doc) {
+            switch (doc.Header.Status)
+            {
+                case "O":
+                    docSap.Status = BoSoOsStatus.sos_Open;
+                    break;
+                case "M":
+                    docSap.Status               = BoSoOsStatus.sos_Missed;
+                    //docSap.Reasons.SetCurrentLine(0);
+                    //docSap.Reasons.Reason       = int.Parse(doc.Header.ReasondId.ToString());
+                    break;
+                case "W":
+                    docSap.Status               = BoSoOsStatus.sos_Sold;
+                    //docSap.Reasons.SetCurrentLine(0);
+                    //docSap.Reasons.Reason       = int.Parse(doc.Header.ReasondId.ToString());
+                    break;
             }
         }
         private void AddStage(SalesOpportunities docSap, List<Etapas> TableEtapas) {
@@ -348,14 +394,15 @@ namespace salesCVM.SAP
                     docSap.Lines.DocumentType   = SetDocType(TableEtapas[s].ObjType);
                     docSap.Lines.DocumentNumber = TableEtapas[s].DocNumber;
                 }
-                docSap.Add();
+                docSap.Lines.Add();
             }
         }
         private void AddPartner(SalesOpportunities docSap, List<Partner> TablePartner)
         {
             for(int p = 0; p < TablePartner.Count; p++) {
                 docSap.Partners.Partners            = TablePartner[p].ParterId;
-                docSap.Partners.RelationshipCode    = 4;
+                if(TablePartner[p].OrlCode > 0)
+                    docSap.Partners.RelationshipCode= TablePartner[p].OrlCode;
                 docSap.Partners.Details             = TablePartner[p].Memo;
                 docSap.Partners.Add();
             }
@@ -365,78 +412,158 @@ namespace salesCVM.SAP
             for (int c = 0; c < TableCompet.Count; c++) {
                 docSap.Competition.Competition  = TableCompet[c].CompetId;
                 docSap.Competition.Details      = TableCompet[c].Memo;
-                docSap.Competition.WonOrLost    = TableCompet[c].ThreatLevi; // Validar si es caracter o string
-                docSap.Add();
+                docSap.Competition.WonOrLost    = TableCompet[c].Won ? "Y" : "N";// Validar si es caracter o string
+                docSap.Competition.Add();
             }
         }
-        private void UpdStage(SalesOpportunities docSap, List<Etapas> TableEtapas)
+        private void UpdStage(ref bool seActEtapas, SalesOpportunities docSap, List<Etapas> TableEtapas)
         {
             int countStage = docSap.Lines.Count;
-            if (countStage == 0)
+            for (int uS = 0; uS < countStage; uS++)
             {
-                AddStage(docSap, TableEtapas);
-            }
-            else
-            {
-                for (int uS = 0; uS < countStage; uS++)
-                {
-                    docSap.Lines.SetCurrentLine(uS);
-                    for (int uD = 0; uD < TableEtapas.Count; uD++) {
-                        if (docSap.Lines.DocumentNumber == TableEtapas[uD].DocNumber && docSap.Lines.LineNum == TableEtapas[uD].LineNum) {
-                            docSap.Lines.SalesPerson    = TableEtapas[uD].SlpCode;
-                            docSap.Lines.StartDate      = TableEtapas[uD].OpenDate;
-                            docSap.Lines.ClosingDate    = TableEtapas[uD].CloseDate;
-                            docSap.Lines.StageKey       = TableEtapas[uD].Step_Id;
-                            docSap.Lines.PercentageRate = TableEtapas[uD].ClosePrcnt;
-                            docSap.Lines.MaxLocalTotal  = TableEtapas[uD].WtSumLoc;
-                            if (TableEtapas[uD].DocNumber > 0)
-                            {
-                                docSap.Lines.DocumentType   = SetDocType(TableEtapas[uD].ObjType);
-                                docSap.Lines.DocumentNumber = TableEtapas[uD].DocNumber;
-                            }
-                        }
+                docSap.Lines.SetCurrentLine(uS);
+                int uD = IndiceEtapas(TableEtapas, docSap.Lines.LineNum);
+                if(uD > -1) { 
+                    docSap.Lines.SalesPerson = TableEtapas[uD].SlpCode;
+                    docSap.Lines.StartDate = TableEtapas[uD].OpenDate;
+                    docSap.Lines.ClosingDate = TableEtapas[uD].CloseDate;
+                    docSap.Lines.StageKey = TableEtapas[uD].Step_Id;
+                    docSap.Lines.PercentageRate = TableEtapas[uD].ClosePrcnt;
+                    docSap.Lines.MaxLocalTotal = TableEtapas[uD].WtSumLoc;
+                    if (TableEtapas[uD].DocNumber > 0)
+                    {
+                        docSap.Lines.DocumentType = SetDocType(TableEtapas[uD].ObjType);
+                        docSap.Lines.DocumentNumber = TableEtapas[uD].DocNumber;
                     }
+                    seActEtapas = true;
                 }
             }
         }
-        private void UpdPartner(SalesOpportunities docSap, List<Partner> TablePartner)
+        private void UpdNewStage(SalesOpportunities docSap, List<Etapas> TableEtapas, bool seActEtapas) {
+            for (int s = 0; s < TableEtapas.Count; s++)
+            {
+                if (TableEtapas[s].LineNum == -1)
+                {
+                    if (seActEtapas)
+                        docSap.Lines.Add();
+
+                    docSap.Lines.SalesPerson = TableEtapas[s].SlpCode;
+                    docSap.Lines.StartDate = TableEtapas[s].OpenDate;
+                    docSap.Lines.ClosingDate = TableEtapas[s].CloseDate;
+                    docSap.Lines.StageKey = TableEtapas[s].Step_Id;
+                    docSap.Lines.PercentageRate = TableEtapas[s].ClosePrcnt;
+                    docSap.Lines.MaxLocalTotal = TableEtapas[s].WtSumLoc;
+                    if (TableEtapas[s].DocNumber > 0)
+                    {
+                        docSap.Lines.DocumentType = SetDocType(TableEtapas[s].ObjType);
+                        docSap.Lines.DocumentNumber = TableEtapas[s].DocNumber;
+                    }
+                    // docSap.Lines.Add();
+                }
+            }
+        }
+        private int IndiceEtapas(List<Etapas> etapas, int LineNum)
+        {
+            int index = -1;
+            for (int j = 0; j < etapas.Count; j++)
+            {
+                if (etapas[j].LineNum != -1)
+                {
+                    if (etapas[j].LineNum == LineNum)
+                    {
+                        index = j;
+                        break;
+                    }
+                }
+            }
+            return index;
+        }
+        private void UpdPartner(ref bool seActPartner, SalesOpportunities docSap, List<Partner> TablePartner)
         {
             int countPartner = docSap.Partners.Count;
-            if (countPartner == 0)
-            {
-                AddPartner(docSap, TablePartner);
-            }
-            else {
-                for (int uP = 0; uP < countPartner; uP++) {
-                    docSap.Partners.SetCurrentLine(uP);
-                    for (int uD = 0; uD < TablePartner.Count; uD++) {
-                        if (docSap.Partners.Partners == TablePartner[uD].ParterId) {
-                            docSap.Partners.RelationshipCode    = 4;
-                            docSap.Partners.Details             = TablePartner[uD].Memo;
-                        }
-                    }
+            for (int uP = 0; uP < countPartner; uP++) {
+                docSap.Partners.SetCurrentLine(uP);
+                int idx = IndicePartner(TablePartner, docSap.Partners.RowNo);
+                if (idx > -1) {
+                    docSap.Partners.Partners = TablePartner[idx].ParterId;
+                    if (TablePartner[idx].OrlCode > 0)
+                        docSap.Partners.RelationshipCode = int.Parse(TablePartner[idx].OrlCode.ToString());
+                    docSap.Partners.Details = TablePartner[idx].Memo.ToString(); ;
+                    seActPartner = true;
                 }
             }
-
         }
-        private void UpdCompet(SalesOpportunities docSap, List<Competidores> TableCompet)
-        {
-            int countCompt = docSap.Partners.Count;
-            if (countCompt == 0)
+        private void UpdNewPartner(SalesOpportunities docSap, List<Partner> TablePartner, bool seActPartner) {
+            for (int p = 0; p < TablePartner.Count; p++)
             {
-                AddCompet(docSap, TableCompet);
+                if (TablePartner[p].Line == -1) {
+                    
+                    if (seActPartner) 
+                        docSap.Partners.Add();
+
+                    docSap.Partners.Partners = TablePartner[p].ParterId;
+                    if (TablePartner[p].OrlCode > 0)
+                        docSap.Partners.RelationshipCode = TablePartner[p].OrlCode;
+                    docSap.Partners.Details = TablePartner[p].Memo;
+                }
             }
-            else {
-                for (int uC = 0; uC < countCompt; uC++) {
-                    docSap.Competition.SetCurrentLine(uC);
-                    for (int uD = 0; uD < TableCompet.Count; uD++) {
-                        if (docSap.Competition.Competition == TableCompet[uD].CompetId) {
-                            docSap.Competition.Details      = TableCompet[uD].Memo;
-                            docSap.Competition.WonOrLost    = TableCompet[uD].ThreatLevi;
-                        }
+        }
+        private int IndicePartner(List<Partner> partner, int Line) {
+            int index = -1;
+            for (int j = 0; j < partner.Count; j++)
+            {
+                if (partner[j].Line != -1)
+                {
+                    if (partner[j].Line == Line)
+                    {
+                        index = j;
+                        break;
                     }
                 }
             }
+            return index;
+        }
+        private void UpdCompet(ref bool seActCompet, SalesOpportunities docSap, List<Competidores> TableCompet)
+        {
+            int countCompt = docSap.Competition.Count;
+            for (int uC = 0; uC < countCompt; uC++) {
+                docSap.Competition.SetCurrentLine(uC);
+                int ind = IndiceCompet(TableCompet, docSap.Competition.RowNo);
+                if (ind > -1) {
+                    docSap.Competition.Competition = TableCompet[ind].CompetId;
+                    docSap.Competition.Details = TableCompet[ind].Memo;
+                    docSap.Competition.WonOrLost = TableCompet[ind].Won ? "Y" : "N";
+                    seActCompet = true;
+                }
+            }
+        }
+        private void UpdNewCompet(SalesOpportunities docSap, List<Competidores> TableCompet, bool seActCompet) {
+            for (int c = 0; c < TableCompet.Count; c++)
+            {
+                if (TableCompet[c].Line == -1) {
+                    if (seActCompet)
+                        docSap.Competition.Add();
+                    
+                    docSap.Competition.Competition = TableCompet[c].CompetId;
+                    docSap.Competition.Details = TableCompet[c].Memo;
+                    docSap.Competition.WonOrLost = TableCompet[c].Won ? "Y" : "N";// Validar si es caracter o string
+                }
+            }
+        }
+        private int IndiceCompet(List<Competidores> compets, int Line) {
+            int index = -1;
+            for (int j = 0; j < compets.Count; j++)
+            {
+                if (compets[j].Line != -1)
+                {
+                    if (compets[j].Line == Line)
+                    {
+                        index = j;
+                        break;
+                    }
+                }
+            }
+            return index;
         }
         private BoMsgPriorities SetPriority(int Prioridad)
         {

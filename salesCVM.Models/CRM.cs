@@ -24,6 +24,11 @@ namespace salesCVM.Models
         public int      CprCode       { get; set; }
         public int      Territory     { get; set; }
         public DateTime OpenDate      { get; set; }
+        public string   Status        { get; set; }
+        public string   DocType       { get; set; }
+        public int      DocNum        { get; set; }
+        public int      ReasondId     { get; set; }
+        public DateTime CloseDate     { get; set; }
     }
     public class TabsOpportunity
     {
@@ -68,6 +73,8 @@ namespace salesCVM.Models
         public List<OpcEtapas>          ListEtapa { get; set; }
         public List<Relacion>           ListRelacion { get; set; }
         public List<Competidores>       ListCompetidor { get; set; }
+        public List<Partner>            ListPartner { get; set; }
+        public List<Razones>            ListRazones { get; set; }
     }
     public class Potencial 
     {
@@ -95,9 +102,11 @@ namespace salesCVM.Models
         public int          ObjType         { get; set; }
         public int          DocNumber       { get; set;}
         public int          LineNum         { get; set; }
+        public char         Status          { get; set; }
         public Etapas() {
             this.SlpName    = "";
             this.Descript   = "";
+            this.LineNum    = -1;
         }
     }
     public class OpcEtapas
@@ -109,6 +118,7 @@ namespace salesCVM.Models
     }
     public class Partner
     {
+        public int Line                 { get; set; }
         public int ParterId             { get; set; }
         public string Name              { get; set; }
         public int OrlCode              { get; set; }
@@ -116,6 +126,7 @@ namespace salesCVM.Models
         public string RelatCard         { get; set; }
         public string Memo              { get; set; }
         public Partner() {
+            this.Line       = -1;
             this.ParterId   = 0;
             this.Name       = "";
             this.OrlCode    = 0;
@@ -125,19 +136,21 @@ namespace salesCVM.Models
     }
     public class Competidores
     {
-        public int CompetId         { get; set; }
-        public string NameCompet    { get; set; }
-        public string ThreatLevi    { get; set; }
-        public string Name          { get; set; }
-        public string Memo          { get; set; }
-        public char Won             { get; set; }
+        public int      Line        { get; set; }
+        public int      CompetId    { get; set; }
+        public string   NameCompet  { get; set; }
+        public string   ThreatLevi  { get; set; }
+        public string   Name        { get; set; }
+        public string   Memo        { get; set; }
+        public bool     Won         { get; set; }
         public Competidores() {
+            this.Line       = -1;
             this.CompetId   = 0;
             this.NameCompet = "";
             this.ThreatLevi = "";
             this.Name       = "";
             this.Memo       = "";
-            this.Won        = ' ';
+            this.Won        = false;
         }
     }
     public class Resumen
@@ -145,14 +158,15 @@ namespace salesCVM.Models
         public char Status       { get; set; }
         public int ReasondId    { get; set; }
         public string Descript     { get; set; }
-        public string DocType      { get; set; }
+        public int DocType      { get; set; }
         public string Name         { get; set; }
-        public string DocNum       { get; set; }
+        public int DocNum       { get; set; }
     }
     public class BusinessP
     {
-        public string CardCode { get; set; }
-        public string CardName { get; set; }
+        public string   CardCode { get; set; }
+        public string   CardName { get; set; }
+        public int      SlpCode { get; set; }
     }
     public class PersonaContacto
     {
@@ -267,5 +281,14 @@ namespace salesCVM.Models
     {
         public char     Code        { get; set; }
         public string   Description { get; set; }
+    }
+    public class OpenDocs
+    {
+        public int          DocEntry { get; set; }
+        public int          DocNum { get; set; }
+        public string       CardCode { get; set; }
+        public string       CardName { get; set; }
+        public DateTime     DocDueDate { get; set; }
+        public DateTime     DocDate { get; set; }
     }
 }

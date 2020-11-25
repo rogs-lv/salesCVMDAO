@@ -138,6 +138,13 @@ namespace salesCVM.Models
                 return $"{command} \"IDS_GetDatosCRM\" ";
             }
         }
+        public string SpGetOpenDocs
+        {
+            get
+            {
+                return $"{command} \"GetOpenDocs\" ";
+            }
+        }
         #endregion
 
         #region Dashboard
