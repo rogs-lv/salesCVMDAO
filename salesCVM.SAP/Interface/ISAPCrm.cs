@@ -11,7 +11,7 @@ namespace salesCVM.SAP.Interface
     {
         bool CreateOportunity(ref MensajesObj msjCreate, Models.SAP modelo, OpportunitySAP _opp, string Usuario);
         bool UpdateOportunity(ref MensajesObj msjUpd, Models.SAP modelo, OpportunitySAP _opp, string Usuario);
-        bool CreateActivity(ref MensajesObj msjCreate, Models.SAP modelo, ActivitySap _act, string Usuario);
-        bool UpdateActivity(ref MensajesObj msjUpdate, Models.SAP modelo, ActivitySap _act, string Usuario);
+        bool CreateActivity(ref MensajesObj msjCreate, Models.SAP modelo, ActivitySAP _act, string Usuario);
+        bool UpdateActivity(ref MensajesObj msjUpdate, Models.SAP modelo, ActivitySAP _act, string Usuario);
     }
 }

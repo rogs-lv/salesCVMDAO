@@ -101,18 +101,6 @@ namespace salesCVM.Controllers
                         return Content(HttpStatusCode.OK, optionsDetail);
                     else
                         return Content(HttpStatusCode.InternalServerError, "Error al cargar datos para el detalle del documento");
-                case 3://Options to header document Activity
-                    OptionsHeadActivity optionsActivity = new OptionsHeadActivity();
-                    if (crmDAO.GetOptionsActivity(ref optionsActivity, cardcode))
-                        return Content(HttpStatusCode.OK, optionsActivity);
-                    else
-                        return Content(HttpStatusCode.InternalServerError, "Error al cargar datos para la actividad");
-                case 4://Options to detail document Activity
-                    OptionsTabsActivity optionTabsActivity = new OptionsTabsActivity();
-                    if (crmDAO.GetOptionsTabsActivity(ref optionTabsActivity))
-                        return Content(HttpStatusCode.OK, optionTabsActivity);
-                    else
-                        return Content(HttpStatusCode.InternalServerError, "Error al cargar datos para el detalle de la actividad");
                 default:
                     return Content(HttpStatusCode.BadRequest, "Opción desconocida");
             }
@@ -156,31 +144,6 @@ namespace salesCVM.Controllers
                 return Content(HttpStatusCode.OK, response);
             else
                 return Content(HttpStatusCode.Conflict, response.Mensaje);
-        }
-
-        [HttpPost]
-        [Route("CreateActivity")]
-        [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public IHttpActionResult CreateActivity([FromBody] ActivitySap document, string usuario)
-        {
-            MensajesObj response = new MensajesObj();
-            if (crmDAO.CreateActivity(ref response, document, usuario))
-                return Content(HttpStatusCode.OK, response);
-            else
-                return Content(HttpStatusCode.Conflict, response.Mensaje);
-        }
-        
-        [HttpPatch]
-        [Route("UpdateActivity")]
-        [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public IHttpActionResult UpdateActivity([FromBody] ActivitySap document, string usuario)
-        {
-            MensajesObj response = new MensajesObj();
-            if (crmDAO.UpdateActivity(ref response, document, usuario))
-                return Content(HttpStatusCode.OK, response);
-            else
-                return Content(HttpStatusCode.Conflict, response.Mensaje);
-        }
-
+        }   
     }
 }

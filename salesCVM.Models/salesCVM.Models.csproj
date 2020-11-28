@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activity.cs" />
     <Compile Include="Configuracion.cs" />
     <Compile Include="CRM.cs" />
     <Compile Include="Dashboard.cs" />

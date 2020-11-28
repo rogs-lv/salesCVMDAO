@@ -217,66 +217,7 @@ namespace salesCVM.Models
         public string Descript { get; set; }
     }
 
-    public class ActivitySap
-    {
-        public int                  IdOpp { get; set; }
-        public int                  LineOpp { get; set; }
-        public int                  ClgCode { get; set; }
-        public Action               Actividad { get; set; }
-        public Tipo                 Tipo { get; set; }
-        public Asunto               Asunto { get; set; }
-        public PersonaContacto      Contacto { get; set; }
-        public BusinessP            Socio { get; set; }
-        public string               Telefono { get; set; }
-        public TabGeneral           TabGeneral { get; set; }
-        public TabContenido         TabContenido { get; set; }
-    }
-    public class OptionsHeadActivity 
-    {
-        public List<Tipo>               ListTipo { get; set; }
-        public List<Asunto>             ListAsunto { get; set; }
-        public List<PersonaContacto>    ListContacto { get; set; }
-        public List<OpcEtapas>             ListEtapa { get; set; }
-        public OptionsHeadActivity() {
-            this.ListTipo       = new List<Tipo>();
-            this.ListAsunto     = new List<Asunto>();
-            this.ListContacto   = new List<PersonaContacto>();
-            this.ListEtapa      = new List<OpcEtapas>();
-        }
-    }
-    public class OptionsTabsActivity
-    {
-        public List<Localidad>      ListLocalidad { get; set; }
-        public OptionsTabsActivity() {
-            this.ListLocalidad  = new List<Localidad>();
-        }
-    }
-    public class TabGeneral
-    {
-        public DateTime     Recontact { get; set; }
-        public DateTime     EndDate { get; set; }
-        public string       Priority { get; set; }
-        public string       Location { get; set; }
-    }
-    public class TabContenido
-    {
-        public string       Notes { get; set; }
-    }
-    public class Tipo
-    {
-        public int      Code { get; set; }
-        public string   Name { get; set; }
-    }
-    public class Asunto
-    {
-        public int      Code { get; set; }
-        public string   Name { get; set; }
-    }
-    public class Localidad
-    {
-        public int      Code { get; set; }
-        public string   Name { get; set; }
-    }
+    
     public class Action
     {
         public char     Code        { get; set; }

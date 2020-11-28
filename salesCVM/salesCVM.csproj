@@ -169,6 +169,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccesoController.cs" />
+    <Compile Include="Controllers\ActivityController.cs" />
     <Compile Include="Controllers\ConfigController.cs" />
     <Compile Include="Controllers\CRMController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />

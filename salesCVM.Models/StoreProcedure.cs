@@ -147,6 +147,16 @@ namespace salesCVM.Models
         }
         #endregion
 
+        #region Activity
+        public string SpGetDatosActividad
+        {
+            get
+            {
+                return $"{command} \"IDS_GetDatosActividad\" ";
+            }
+        }
+        #endregion
+
         #region Dashboard
         public string SpGetPromNoticias
         {

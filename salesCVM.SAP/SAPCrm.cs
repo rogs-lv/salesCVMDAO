@@ -21,7 +21,7 @@ namespace salesCVM.SAP
             isap = new SAPConnect();
             lg = Log.getIntance();
         }
-        public bool CreateActivity(ref MensajesObj msjCreate, Models.SAP modelo, ActivitySap _act, string Usuario)
+        public bool CreateActivity(ref MensajesObj msjCreate, Models.SAP modelo, ActivitySAP _act, string Usuario)
         {
             string msj = string.Empty;
             Company _oCompany = null;
@@ -35,34 +35,37 @@ namespace salesCVM.SAP
                     ActivitiesService oActServ  = (ActivitiesService)oCompServ.GetBusinessService(ServiceTypes.ActivitiesService);
                     Activity oAct               = (Activity)oActServ.GetDataInterface(ActivitiesServiceDataInterfaces.asActivity);
 
-                    oAct.CardCode               = _act.Socio.CardCode;
-                    oAct.ContactPersonCode      = _act.Contacto.CntctCode;
-                    oAct.Phone                  = _act.Telefono;
+                    oAct.CardCode               = _act.CardCode;
+                    if(_act.CntctCode > 0)
+                        oAct.ContactPersonCode      = _act.CntctCode;
+                    oAct.Phone                  = _act.Tel;
                     oAct.HandledBy              = 1;
-                    oAct.Location               = int.Parse(_act.TabGeneral.Location);
-                    oAct.Subject                = _act.Asunto.Code;
-                    oAct.Priority               = SetPriority(int.Parse(_act.TabGeneral.Priority));
-                    oAct.Activity               = SetActivity(_act.Actividad.Code);
-                    oAct.StartDate              = _act.TabGeneral.Recontact.Date;
-                    oAct.EndDuedate             = _act.TabGeneral.EndDate.Date;
-                    oAct.StartTime              = _act.TabGeneral.Recontact;
-                    oAct.EndTime                = _act.TabGeneral.EndDate;
-                    oAct.Notes                  = _act.TabContenido.Notes;
+                    if(_act.CntctType != 0)
+                        oAct.ActivityType       = _act.CntctType;
+                    if(_act.CntctSbjct != -1)
+                        oAct.Subject            = _act.CntctSbjct;
+                    if(_act.Location > 0)
+                        oAct.Location           = _act.Location;
+                    oAct.Priority               = SetPriority(_act.Priority);
+                    oAct.Activity               = SetActivity(_act.Action);
+                    oAct.StartDate              = DateTime.Parse(_act.Recontact);
+                    oAct.EndDuedate             = DateTime.Parse(_act.endDate);
+                    oAct.StartTime              = DateTime.ParseExact(_act.BeginTime, "H:mm:ss", null, System.Globalization.DateTimeStyles.None);
+                    oAct.EndTime                = DateTime.ParseExact(_act.ENDTime, "H:mm:ss", null, System.Globalization.DateTimeStyles.None);
+                    oAct.Notes                  = _act.Notes;
 
                     AddOppToAct(oAct, _act);
-
-                    if (oActServ.AddActivity(oAct).ActivityCode != 0)
+                    int numAct = oActServ.AddActivity(oAct).ActivityCode;
+                    if (numAct != 0) // Se genero correctamente
                     {
-                        msjCreate.Mensaje   = $"{_oCompany.GetLastErrorCode()} {_oCompany.GetLastErrorDescription()}";
-                        return false;
-                    }
+                        msjCreate.Code = numAct.ToString();
+                        msjCreate.Mensaje = string.Empty;
+                        return true;
+                    } // Hubo algun error
                     else
                     {
-                        string idAct        = string.Empty;
-                        _oCompany.GetNewObjectCode(out idAct);
-                        msjCreate.Code      = idAct;
-                        msjCreate.Mensaje   = string.Empty;
-                        return true;
+                        msjCreate.Mensaje = $"{_oCompany.GetLastErrorCode()} {_oCompany.GetLastErrorDescription()}";
+                        return false;
                     }
                 }
                 else {
@@ -86,7 +89,7 @@ namespace salesCVM.SAP
                 }
             }
         }
-        public bool UpdateActivity(ref MensajesObj msjUpdate, Models.SAP modelo, ActivitySap _act, string Usuario)
+        public bool UpdateActivity(ref MensajesObj msjUpdate, Models.SAP modelo, ActivitySAP _act, string Usuario)
         {
             string msj = string.Empty;
             Company _oCompany = null;
@@ -101,34 +104,48 @@ namespace salesCVM.SAP
                     ActivityParams oActParams   = (ActivityParams)oActServ.GetDataInterface(ActivitiesServiceDataInterfaces.asActivityParams);
                     oActParams.ActivityCode     = _act.ClgCode;
                     Activity oAct               = oActServ.GetActivity(oActParams);
-                    
-                    if (oAct.Closed == BoYesNoEnum.tNO)
+
+                    if (oAct.SalesOpportunityId != _act.OprId && oAct.SalesOpportunityId > 0)
                     {
-                        oAct.CardCode               = _act.Socio.CardCode;
-                        oAct.ContactPersonCode      = _act.Contacto.CntctCode;
-                        oAct.Phone                  = _act.Telefono;
-                        oAct.HandledBy              = 1;
-                        oAct.Location               = int.Parse(_act.TabGeneral.Location);
-                        oAct.Subject                = _act.Asunto.Code;
-                        oAct.Priority               = SetPriority(int.Parse(_act.TabGeneral.Priority));
-                        oAct.Activity               = SetActivity(_act.Actividad.Code);
-                        oAct.StartDate              = _act.TabGeneral.Recontact.Date;
-                        oAct.EndDuedate             = _act.TabGeneral.EndDate.Date;
-                        oAct.StartTime              = _act.TabGeneral.Recontact;
-                        oAct.EndTime                = _act.TabGeneral.EndDate;
-                        oAct.Notes                  = _act.TabContenido.Notes;
-
-                        AddOppToAct(oAct, _act);
-
-                        oActServ.UpdateActivity(oAct);
-                        msjUpdate.Code      = _act.ClgCode.ToString();
-                        msjUpdate.Mensaje   = "Actividad Actualizada";
-                        return true;
-                    }
-                    else {
-                        msjUpdate.Code      = "";
-                        msjUpdate.Mensaje   = $"La actividad {_act.ClgCode} tiene un estatus de cancelado";
+                        msjUpdate.Code = "";
+                        msjUpdate.Mensaje = $"La actividad ya tiene una oportunidad ligada y no puede ser modificada";
                         return false;
+                    }
+                    else
+                    {
+                        if (oAct.Closed == BoYesNoEnum.tNO)
+                        {
+                            if (_act.CntctCode > 0)
+                                oAct.ContactPersonCode  = _act.CntctCode;
+                            oAct.Phone                  = _act.Tel;
+                            oAct.HandledBy              = 1;
+                            if (_act.CntctType != 0)
+                                oAct.ActivityType       = _act.CntctType;
+                            if (_act.CntctSbjct != -1)
+                                oAct.Subject            = _act.CntctSbjct;
+                            if (_act.Location > 0)
+                                oAct.Location           = _act.Location;
+                            oAct.Priority               = SetPriority(_act.Priority);
+                            oAct.Activity               = SetActivity(_act.Action);
+                            oAct.StartDate              = DateTime.Parse(_act.Recontact);
+                            oAct.EndDuedate             = DateTime.Parse(_act.endDate);
+                            oAct.StartTime              = DateTime.ParseExact(_act.BeginTime, "H:mm:ss", null, System.Globalization.DateTimeStyles.None);
+                            oAct.EndTime                = DateTime.ParseExact(_act.ENDTime, "H:mm:ss", null, System.Globalization.DateTimeStyles.None);
+                            oAct.Notes                  = _act.Notes;
+
+                            AddOppToAct(oAct, _act);
+
+                            oActServ.UpdateActivity(oAct);
+                            msjUpdate.Code = _act.ClgCode.ToString();
+                            msjUpdate.Mensaje = "Actividad Actualizada";
+                            return true;
+                        }
+                        else
+                        {
+                            msjUpdate.Code = "";
+                            msjUpdate.Mensaje = $"La actividad {_act.ClgCode} tiene un estatus de cancelado";
+                            return false;
+                        }
                     }
                 }
                 else {
@@ -579,31 +596,31 @@ namespace salesCVM.SAP
                     return BoMsgPriorities.pr_Low;
             }
         }
-        private BoActivities SetActivity(char Actividad)
+        private BoActivities SetActivity(string Actividad)
         {
             switch (Actividad)
             {
-                case 'C':
+                case "C":
                     return BoActivities.cn_Conversation;
-                case 'M':
+                case "M":
                     return BoActivities.cn_Meeting;
-                case 'T':
+                case "T":
                     return BoActivities.cn_Task;
-                case 'E':
+                case "E":
                     return BoActivities.cn_Note;
-                case 'P':
+                case "P":
                     return BoActivities.cn_Campaign;
-                case 'N':
+                case "N":
                     return BoActivities.cn_Other;
                 default:
                     return BoActivities.cn_Conversation;
             }
         }
-        private void AddOppToAct(Activity oAct, ActivitySap _act) {
-            if (_act.IdOpp > 0)
+        private void AddOppToAct(Activity oAct, ActivitySAP _act) {
+            if (_act.OprId > 0)
             {
-                oAct.SalesOpportunityId = _act.IdOpp;
-                oAct.SalesOpportunityLine = _act.LineOpp;
+                oAct.SalesOpportunityId     = _act.OprId;
+                oAct.SalesOpportunityLine   = _act.OprLine;
             }
         }
     }
