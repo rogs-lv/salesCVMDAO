@@ -24,7 +24,7 @@ namespace salesCVM.Controllers
         [HttpGet]
         [Route("GetMasterData")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public IHttpActionResult GetMasterData(int type, string whsCode = "", string priceList = "") {
+        public IHttpActionResult GetMasterData(int type, string whsCode = "", string priceList = "", string cardCode= "") {
             switch (type)
             {
                 case 2:
@@ -34,13 +34,13 @@ namespace salesCVM.Controllers
                     if (priceList.Length > 0)
                         return Content(HttpStatusCode.BadRequest, "La lista de precios no es valido");
 
-                    if (DtsDao.GetDatosMaestros(ref ListBp, type, "", ""))
+                    if (DtsDao.GetDatosMaestros(ref ListBp, type, "", "", ""))
                         return Content(HttpStatusCode.OK, ListBp);
                     else
                         return Content(HttpStatusCode.NoContent, "No se recuperarón socios de negocios");
                 case 4:
                     List<Item> ListItem = new List<Item>();
-                    if (DtsDao.GetDatosMaestros(ref ListItem, type, whsCode, priceList))
+                    if (DtsDao.GetDatosMaestros(ref ListItem, type, whsCode, priceList, cardCode))
                         return Content(HttpStatusCode.OK, ListItem);
                     else
                         return Content(HttpStatusCode.NoContent, "No se recuperarón artículos");

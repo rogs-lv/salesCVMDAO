@@ -28,7 +28,7 @@ namespace salesCVM.DAO.DAO
             Encry       = new Encrypt();
             iSapMD      = new SAPMasterData();
         }
-        public bool GetDatosMaestros<T>(ref List<T> ListDatosMaestros, int type, string WhsCode, string PriceList)
+        public bool GetDatosMaestros<T>(ref List<T> ListDatosMaestros, int type, string WhsCode, string PriceList, string cardCode)
         {
             IDbConnection connection = DBAdapter.GetConnection();
             try
@@ -36,10 +36,18 @@ namespace salesCVM.DAO.DAO
                 if (connection.State == ConnectionState.Closed)
                     throw new Exception("Connection not available or closed");
 
-                if(type == 2)
+                if (type == 2)
                     ListDatosMaestros = connection.Query<T>($"{SpDatosMaestros} {type},'','',''").ToList();
                 else
-                    ListDatosMaestros = connection.Query<T>($"{SpDatosMaestros} {type},'{WhsCode}','{PriceList}',''").ToList();
+                {
+                    if (String.IsNullOrEmpty(cardCode))
+                        ListDatosMaestros = connection.Query<T>($"{SpDatosMaestros} {type},'{WhsCode}','{PriceList}',''").ToList();
+                    else
+                    {
+                        int pricePartner = connection.Query<int>($"{QryPricePartner} '{cardCode}'").FirstOrDefault();
+                        ListDatosMaestros = connection.Query<T>($"{SpDatosMaestros} {type},'{WhsCode}','{pricePartner}',''").ToList();
+                    }
+                }
 
                 return true;
             }

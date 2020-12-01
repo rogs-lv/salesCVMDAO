@@ -128,6 +128,11 @@ namespace salesCVM.Models
                 return $"{command} \"IDS_Existe\" ";
             }
         }
+        public string QryPricePartner { 
+            get {
+                return $"SELECT \"ListNum\" FROM OCRD WHERE \"CardCode\" = ";
+            } 
+        }
         #endregion
 
         #region CRM
@@ -153,6 +158,16 @@ namespace salesCVM.Models
             get
             {
                 return $"{command} \"IDS_GetDatosActividad\" ";
+            }
+        }
+        #endregion
+
+        #region Impresion
+        public string SpGetReporte
+        {
+            get
+            {
+                return $"{command} \"IDS_GetReporte\" ";
             }
         }
         #endregion

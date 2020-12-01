@@ -65,6 +65,7 @@
     <Compile Include="DatosMaestros.cs" />
     <Compile Include="Marketing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reporte.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="Rol.cs" />
     <Compile Include="SAP.cs" />
