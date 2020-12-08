@@ -9,8 +9,17 @@ namespace salesCVM.Models
 {
     public class OpportunitySAP
     {
-        public Opportunity Header { get; set; }
-        public TabsOpportunity Detail { get; set; }
+        public Opportunity      Header { get; set; }
+        public TabsOpportunity  Tabs { get; set; }
+    }
+    public class Tab
+    {
+        public Potencial            TabPotencial { get; set; }
+        public General              TabGeneral { get; set; }
+        public List<Etapas>         TableEtapas { get; set; }
+        public List<Partner>        TablePartner { get; set; }
+        public List<Competidores>   TableCompet { get; set; }
+        public Resumen              TabResumen { get; set; }
     }
     public class Opportunity
     {

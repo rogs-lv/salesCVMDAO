@@ -186,25 +186,25 @@ namespace salesCVM.SAP
                     oOpp.StartDate               = _opp.Header.OpenDate;
                     if (_opp.Header.CloseDate != null)
                         oOpp.ClosingDate         = _opp.Header.CloseDate;
-                    oOpp.PredictedClosingDate    = _opp.Detail.TabPotencial.PredDate;
-                    if (_opp.Detail.TabGeneral.PrjCode != "")
-                        oOpp.ProjectCode             = _opp.Detail.TabGeneral.PrjCode;
-                    if (_opp.Detail.TabGeneral.Source > 0)
-                        oOpp.Source                  = _opp.Detail.TabGeneral.Source;
-                    if (_opp.Detail.TabGeneral.Industry > 0)
-                        oOpp.Industry                = _opp.Detail.TabGeneral.Industry;
-                    if (_opp.Detail.TabGeneral.Memo != "")
-                        oOpp.Remarks                 = _opp.Detail.TabGeneral.Memo;
+                    oOpp.PredictedClosingDate    = _opp.Tabs.TabPotencial.PredDate;
+                    if (_opp.Tabs.TabGeneral.PrjCode != "")
+                        oOpp.ProjectCode             = _opp.Tabs.TabGeneral.PrjCode;
+                    if (_opp.Tabs.TabGeneral.Source > 0)
+                        oOpp.Source                  = _opp.Tabs.TabGeneral.Source;
+                    if (_opp.Tabs.TabGeneral.Industry > 0)
+                        oOpp.Industry                = _opp.Tabs.TabGeneral.Industry;
+                    if (_opp.Tabs.TabGeneral.Memo != "")
+                        oOpp.Remarks                 = _opp.Tabs.TabGeneral.Memo;
                     oOpp.SalesPerson             = _opp.Header.SlpCode;
-                    oOpp.TotalAmountLocal        = _opp.Detail.TabPotencial.MaxSumLoc;
+                    oOpp.TotalAmountLocal        = _opp.Tabs.TabPotencial.MaxSumLoc;
 
                     if (_opp.Header.CprCode > 0)
                         oOpp.ContactPerson       = _opp.Header.CprCode;
 
                     AddStatus(oOpp, _opp);
-                    AddStage(oOpp, _opp.Detail.TableEtapas);
-                    AddPartner(oOpp, _opp.Detail.TablePartner);
-                    AddCompet(oOpp, _opp.Detail.TableCompet);
+                    AddStage(oOpp, _opp.Tabs.TableEtapas);
+                    AddPartner(oOpp, _opp.Tabs.TablePartner);
+                    AddCompet(oOpp, _opp.Tabs.TableCompet);
 
                     // AddUserFieldHeader(Opp, "");
                     if (oOpp.Add() != 0)
@@ -260,34 +260,34 @@ namespace salesCVM.SAP
                         oOpp.StartDate              = _opp.Header.OpenDate;
                         if (_opp.Header.CloseDate != null)
                             oOpp.ClosingDate        = _opp.Header.CloseDate;
-                        oOpp.PredictedClosingDate   = _opp.Detail.TabPotencial.PredDate;
-                        if (_opp.Detail.TabGeneral.PrjCode != "")
-                            oOpp.ProjectCode        = _opp.Detail.TabGeneral.PrjCode;
-                        if (_opp.Detail.TabGeneral.Source > 0)
-                            oOpp.Source             = _opp.Detail.TabGeneral.Source;
-                        if (_opp.Detail.TabGeneral.Industry > 0)
-                            oOpp.Industry           = _opp.Detail.TabGeneral.Industry;
-                        if (_opp.Detail.TabGeneral.Memo != "")
-                            oOpp.Remarks            = _opp.Detail.TabGeneral.Memo;
+                        oOpp.PredictedClosingDate   = _opp.Tabs.TabPotencial.PredDate;
+                        if (_opp.Tabs.TabGeneral.PrjCode != "")
+                            oOpp.ProjectCode        = _opp.Tabs.TabGeneral.PrjCode;
+                        if (_opp.Tabs.TabGeneral.Source > 0)
+                            oOpp.Source             = _opp.Tabs.TabGeneral.Source;
+                        if (_opp.Tabs.TabGeneral.Industry > 0)
+                            oOpp.Industry           = _opp.Tabs.TabGeneral.Industry;
+                        if (_opp.Tabs.TabGeneral.Memo != "")
+                            oOpp.Remarks            = _opp.Tabs.TabGeneral.Memo;
                         oOpp.SalesPerson            = _opp.Header.SlpCode;
-                        oOpp.TotalAmountLocal       = _opp.Detail.TabPotencial.MaxSumLoc;
+                        oOpp.TotalAmountLocal       = _opp.Tabs.TabPotencial.MaxSumLoc;
 
                         if (_opp.Header.CprCode > 0)
                             oOpp.ContactPerson      = _opp.Header.CprCode;
 
                         bool seActEtapas = false;
-                        UpdStage(ref seActEtapas, oOpp, _opp.Detail.TableEtapas);
+                        UpdStage(ref seActEtapas, oOpp, _opp.Tabs.TableEtapas);
                         bool seActPartner = false;
-                        UpdPartner(ref seActPartner, oOpp, _opp.Detail.TablePartner);
+                        UpdPartner(ref seActPartner, oOpp, _opp.Tabs.TablePartner);
                         bool seActCompet = false;
-                        UpdCompet(ref seActCompet, oOpp, _opp.Detail.TableCompet);
+                        UpdCompet(ref seActCompet, oOpp, _opp.Tabs.TableCompet);
 
                         // AddUserFieldHeader(oOpp, "");
 
                         // si hay que agregar nuevo registros
-                        UpdNewStage(oOpp, _opp.Detail.TableEtapas, seActEtapas);
-                        UpdNewPartner(oOpp, _opp.Detail.TablePartner, seActPartner);
-                        UpdNewCompet(oOpp, _opp.Detail.TableCompet, seActCompet);
+                        UpdNewStage(oOpp, _opp.Tabs.TableEtapas, seActEtapas);
+                        UpdNewPartner(oOpp, _opp.Tabs.TablePartner, seActPartner);
+                        UpdNewCompet(oOpp, _opp.Tabs.TableCompet, seActCompet);
 
                         UpdStatus(oOpp, _opp);
 
